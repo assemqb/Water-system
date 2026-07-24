@@ -14,10 +14,15 @@ from typing import Dict, Tuple
 # ── Project paths ─────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "db"
-# Legacy folder name — holds Kazhydromet raw CSVs for dataset build
+# Legacy folder name — holds Kazhydromet raw CSVs for dataset build (not the LLM runtime)
 OLLAMA_DIR = PROJECT_ROOT / "ollama"
 RAW_DATA_DIR = OLLAMA_DIR
 
+# ── Ollama (Environmental Intelligence Analyst) ───────────────────────────────
+OLLAMA_BASE_URL = "http://localhost:11434"
+OLLAMA_MODEL = ""  # empty = auto-detect from installed models
+OLLAMA_PREFERRED_MODELS = ("llama3.2", "llama3", "qwen2.5", "qwen", "mistral", "gemma2", "gemma")
+OLLAMA_TIMEOUT = 45.0
 GEOJSON_PATH = PROJECT_ROOT / "kz.json"
 
 # Canonical master dataset (built by data/build_dataset.py)

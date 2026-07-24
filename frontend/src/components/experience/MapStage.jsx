@@ -21,6 +21,7 @@ export function MapStage({
   onGeoClose,
   onBasinSelect,
   onBasinFocus,
+  onAnalystOpen,
   children,
 }) {
   return (
@@ -60,6 +61,7 @@ export function MapStage({
           gis={gis}
           onClose={onGeoClose}
           onBasinFocus={onBasinFocus}
+          onAnalystOpen={onAnalystOpen}
         />
       )}
 

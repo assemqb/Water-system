@@ -16,6 +16,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+from analytics.ai_insights import generate_insights
+from analytics.gis_layers import basin_stats, pollution_hotspots
+from analytics.chart_narratives import chart_narratives
+from analytics.chat_assistant import chat as chat_assistant
 from analytics.i18n_content import LIMITATIONS_I18N, META_BANNERS, ML_DISCLAIMERS, WHY_NOT_DL, chart_labels, norm_lang
 from analytics.plotly_json import figure_to_plain_dict
 from analytics.ml_engine import (
@@ -23,12 +27,14 @@ from analytics.ml_engine import (
     prepare_yearly_series,
     train_and_compare,
 )
+from analytics.shap_analysis import compute_shap_values
 from config.logging_config import get_logger
 from config.settings import (
     DATA_PATH,
     GEOJSON_PATH,
     MODEL_COLORS,
     REGION_NAME_MAP,
+    TREE_MODEL_NAMES,
 )
 from data.loader import data_quality_summary, load_enriched
 from data.validator import DataValidator
@@ -130,6 +136,9 @@ class DashboardService:
             "last_updated": pd.Timestamp.now().strftime("%Y-%m-%d"),
         }
 
+    def insights(self, df: pd.DataFrame, lang: str = "en") -> list[str]:
+        return generate_insights(df, lang=lang)
+
     def kpi(self, df: pd.DataFrame) -> dict:
         return {
             "records": int(len(df)),
@@ -181,6 +190,40 @@ class DashboardService:
             "top_regions": top.head(8).to_dict(orient="records"),
         }
 
+    def chat(
+        self,
+        df: pd.DataFrame,
+        message: str,
+        lang: str = "en",
+        *,
+        sources: Optional[list[str]] = None,
+        regions: Optional[list[str]] = None,
+        basins: Optional[list[str]] = None,
+        years: Optional[list[int]] = None,
+        pollutants: Optional[list[str]] = None,
+    ) -> dict:
+        filters = {
+            "sources": sources,
+            "regions": regions,
+            "basins": basins,
+            "years": years,
+            "pollutants": pollutants,
+        }
+        hotspots = pollution_hotspots(df) if not df.empty else []
+        basins_data = basin_stats(df) if not df.empty else []
+        risk = self.risk_alerts(df) if not df.empty else {}
+        forecast = self.ml_forecast(df) if not df.empty else {"ok": False, "message": "empty selection"}
+        return chat_assistant(
+            message,
+            df,
+            lang=lang,
+            filters=filters,
+            hotspots=hotspots,
+            basin_stats=basins_data,
+            forecast=forecast,
+            risk_alerts=risk,
+        )
+
     def compare(
         self,
         df: pd.DataFrame,
@@ -228,6 +271,15 @@ class DashboardService:
             }
             for r in results
         ]
+        shap_data: dict[str, list] = {}
+        X = np.array(years, dtype=float).reshape(-1, 1)
+        live_map = {r.name: r for r in results}
+        for name in TREE_MODEL_NAMES:
+            if name not in live_map:
+                continue
+            shap_df = compute_shap_values(live_map[name].model, name, X, feature_names=["Year"])
+            if shap_df is not None:
+                shap_data[name] = shap_df.to_dict(orient="records")
         cmp_df = comparison_df_from_records(records, forecast_year)
         return {
             "ok": True,
@@ -238,6 +290,7 @@ class DashboardService:
             "models": records,
             "comparison_table": cmp_df.to_dict(orient="records"),
             "colors": MODEL_COLORS,
+            "shap": shap_data,
             "any_overfitting": any(r["overfitting_warning"] for r in records),
         }
 

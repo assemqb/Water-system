@@ -7,7 +7,7 @@ const STATUS_LABEL = {
   high: 'gis.statusHigh',
 }
 
-export function GeoStoryPanel({ selection, gis, onClose, onBasinFocus }) {
+export function GeoStoryPanel({ selection, gis, onClose, onBasinFocus, onAnalystOpen }) {
   const { t } = useLanguage()
   if (!selection || !gis) return null
 
@@ -47,6 +47,9 @@ export function GeoStoryPanel({ selection, gis, onClose, onBasinFocus }) {
         )}
         <button type="button" className="geo-story__action" onClick={() => onBasinFocus?.(station.basin)}>
           {t('gis.exploreBasin')}
+        </button>
+        <button type="button" className="geo-story__action geo-story__action--secondary" onClick={onAnalystOpen}>
+          {t('analyst.openShort')}
         </button>
       </aside>
     )

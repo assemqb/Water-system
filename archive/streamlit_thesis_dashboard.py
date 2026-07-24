@@ -13,16 +13,10 @@ store supports a future migration path to PostgreSQL without changing business l
 from __future__ import annotations
 
 import json
-import sys
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 from typing import Dict, Tuple
-
-# Streamlit Cloud runs this file from archive/; add project root for package imports.
-_ROOT = Path(__file__).resolve().parent.parent
-if str(_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ROOT))
 
 import numpy as np
 import pandas as pd
@@ -39,13 +33,16 @@ from config.settings import (
     ML_DISCLAIMER,
     MODEL_COLORS,
     REGION_NAME_MAP,
+    TREE_MODEL_NAMES,
     WHY_NOT_DEEP_LEARNING,
 )
+from analytics.ai_insights import generate_insights
 from analytics.ml_engine import (
     comparison_df_from_records,
     prepare_yearly_series,
     train_and_compare,
 )
+from analytics.shap_analysis import compute_shap_values
 from data.loader import data_quality_summary, load_enriched
 from data.validator import DataValidator
 from visualization.charts import build_pollutant_region_heatmap, build_yoy_wqi_delta
@@ -645,6 +642,12 @@ def main() -> None:
     st.plotly_chart(fig_yoy, use_container_width=True)
     card_close()
 
+    section_header("💡 Insights (rule-based)")
+    card_open()
+    for line in generate_insights(filtered_df):
+        st.markdown(line)
+    card_close()
+
     section_header("🤖 ML Prediction — Comparative Study")
     st.caption(
         f"Validation: TimeSeriesSplit CV | Metrics: MAE, RMSE, R², MAPE | {ML_DISCLAIMER}"
@@ -719,6 +722,33 @@ def main() -> None:
                     "Tree/boosting models show in-sample R² > 0.95 on n < 10 — overfitting likely. "
                     "Trust CV metrics and Linear Regression for trend interpretation."
                 )
+
+            with st.expander("SHAP feature importance (tree-based models)"):
+                X = np.array(_years, dtype=float).reshape(-1, 1)
+                live_results = train_and_compare(
+                    np.array(_years, dtype=float), np.array(_y), _next
+                )
+                live_map = {r.name: r for r in live_results}
+                for _res in _cached:
+                    if _res["name"] not in TREE_MODEL_NAMES or _res["name"] not in live_map:
+                        continue
+                    shap_df = compute_shap_values(
+                        live_map[_res["name"]].model,
+                        _res["name"],
+                        X,
+                        feature_names=["Year"],
+                    )
+                    if shap_df is not None:
+                        st.markdown(f"**{_res['name']}** — mean |SHAP|")
+                        fig_shap = px.bar(
+                            shap_df,
+                            x="mean_abs_shap",
+                            y="feature",
+                            orientation="h",
+                            template=plot_template,
+                            title=f"SHAP — {_res['name']} (n={len(_years)})",
+                        )
+                        st.plotly_chart(fig_shap, use_container_width=True)
 
         for _idx, _res in enumerate(_cached, start=1):
             with _tabs[_idx]:

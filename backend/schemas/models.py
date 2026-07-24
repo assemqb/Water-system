@@ -32,3 +32,8 @@ class CompareRequest(BaseModel):
 
 class MLRequest(FilterRequest):
     target: str = "WQI_Score"
+
+
+class ChatRequest(FilterRequest):
+    message: str = Field(..., min_length=1, max_length=2000)
+    lang: Literal["en", "ru", "kk"] = "kk"

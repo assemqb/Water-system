@@ -96,6 +96,22 @@ body {
   align-items: center;
 }
 
+.platform__analyst {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(8, 47, 73, 0.6);
+  color: #bae6fd;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.platform__analyst:hover {
+  background: rgba(14, 116, 144, 0.7);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+}
+
 /* Collapsed filter — replaced by EnvironmentalExplorer scope bar */
 .platform__filters { display: none; }
 

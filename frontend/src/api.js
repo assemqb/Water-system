@@ -52,6 +52,7 @@ export const api = {
   charts: (filters) => post('/api/dashboard/charts', filters, 90000),
   ml: (filters, target) => post('/api/dashboard/ml', { ...filters, target }, 120000),
   compare: (payload) => post('/api/dashboard/compare', payload, 30000),
+  chat: (payload) => post('/api/dashboard/chat', payload, 120000),
   geojson: () => get('/api/dashboard/geojson', 30000),
   exportCsv: async (filters) => {
     const res = await fetchWithTimeout(

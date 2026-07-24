@@ -19,6 +19,11 @@ import { RiskDashboard } from '../dashboard/RiskDashboard.jsx'
 import { maxOf, minOf, safeRegions, safeYears } from '../../utils/array.js'
 import { focusTrendByYear } from '../../utils/chartFocus.js'
 
+function renderMd(text) {
+  if (text == null) return ''
+  return String(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+}
+
 export function WaterExperience({
   charts,
   summary,
@@ -40,6 +45,7 @@ export function WaterExperience({
   onBasinFocus,
   gis,
   hotspotRegions,
+  onAnalystOpen,
   onExport,
   recordCount,
   filterPayload,
@@ -51,6 +57,7 @@ export function WaterExperience({
   const { t } = useLanguage()
   const kpi = summary?.kpi
   const facts = summary?.public_facts || {}
+  const insights = Array.isArray(summary?.insights) ? summary.insights.filter(Boolean) : []
   const regions = safeRegions(options?.regions)
   const regionStats = summary?.region_stats
   const yearMin = minOf(filters?.years)
@@ -95,6 +102,9 @@ export function WaterExperience({
         <div className="platform__tools">
           <ThemeToggle />
           <LanguageSwitcher />
+          <button type="button" className="platform__analyst" onClick={onAnalystOpen}>
+            {t('analyst.openShort')}
+          </button>
         </div>
       </header>
 
@@ -122,6 +132,7 @@ export function WaterExperience({
         onGeoClose={onGeoClose}
         onBasinSelect={onBasinSelect}
         onBasinFocus={onBasinFocus}
+        onAnalystOpen={onAnalystOpen}
       >
         {!mapSel.geoSelection && (
           <NationalStatusPanel kpi={kpi} facts={facts} nationalStory={stories?.national_status} />
@@ -160,6 +171,13 @@ export function WaterExperience({
                 <div className="journey-kpi"><span>{t('national.highRisk')}</span><strong>{kpi.high_risk_share}%</strong></div>
                 <div className="journey-kpi"><span>{t('national.records')}</span><strong>{kpi.records?.toLocaleString()}</strong></div>
               </div>
+            )}
+            {insights.length > 0 && (
+              <ul className="insight-stream">
+                {insights.slice(0, 4).map((line, i) => (
+                  <li key={i} dangerouslySetInnerHTML={{ __html: renderMd(line) }} />
+                ))}
+              </ul>
             )}
           </StorySection>
 
