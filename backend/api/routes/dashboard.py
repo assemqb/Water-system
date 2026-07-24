@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query, Response
 
-from backend.schemas.models import ChatRequest, CompareRequest, FilterRequest, MLRequest
+from backend.schemas.models import CompareRequest, FilterRequest, MLRequest
 from backend.services.dashboard_service import dashboard_service
 
 from analytics.chart_narratives import chart_narratives
@@ -72,7 +72,6 @@ def dashboard_summary(body: FilterRequest):
         "kpi": dashboard_service.kpi(filtered),
         "data_quality": dashboard_service.data_quality(filtered),
         "risk_alerts": dashboard_service.risk_alerts(filtered),
-        "insights": dashboard_service.insights(filtered, lang=lang),
         "public_facts": public_facts(filtered),
         "chart_narratives": chart_narratives(filtered, lang=lang),
         "stories": generate_stories(filtered, lang=lang),
@@ -107,43 +106,6 @@ def dashboard_compare(body: CompareRequest):
     )
     return dashboard_service.compare(
         filtered, body.region_a, body.year_a, body.region_b, body.year_b
-    )
-
-
-@router.get("/analyst/status")
-def analyst_status():
-    """Ollama availability for the Environmental Intelligence Analyst."""
-    from analytics.ollama_client import is_available, list_models, resolve_model
-
-    available = is_available()
-    return {
-        "ollama_available": available,
-        "model": resolve_model() if available else None,
-        "installed_models": list_models(),
-    }
-
-
-@router.post("/chat")
-def dashboard_chat(body: ChatRequest):
-    """Environmental Intelligence Analyst — Ollama LLM with AquaMonitor context."""
-    df = dashboard_service.load_dataset()
-    filtered = dashboard_service.apply_filters(
-        df,
-        sources=body.sources,
-        regions=body.regions,
-        basins=body.basins,
-        years=body.years,
-        pollutants=body.pollutants,
-    )
-    return dashboard_service.chat(
-        filtered,
-        body.message,
-        lang=body.lang or "en",
-        sources=body.sources,
-        regions=body.regions,
-        basins=body.basins,
-        years=body.years,
-        pollutants=body.pollutants,
     )
 
 

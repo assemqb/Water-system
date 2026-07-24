@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from analytics.ai_insights import _chem
+from analytics.data_helpers import _chem
 
 
 def public_facts(df: pd.DataFrame) -> dict:

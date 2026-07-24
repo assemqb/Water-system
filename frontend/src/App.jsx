@@ -3,7 +3,6 @@ import { api } from './api.js'
 import { useLanguage } from './i18n/LanguageContext.jsx'
 import { useTheme } from './i18n/ThemeContext.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
-import { ChatPanel } from './components/ChatPanel.jsx'
 import { WaterExperience } from './components/experience/WaterExperience.jsx'
 import { useMapSelection } from './hooks/useMapSelection.js'
 import {
@@ -55,7 +54,6 @@ export default function App() {
   const [bootstrapError, setBootstrapError] = useState(null)
   const [dataError, setDataError] = useState(null)
   const [filterEmpty, setFilterEmpty] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
   const [mapMode, setMapMode] = useState('wqi')
   const [yearFocus, setYearFocus] = useState(null)
   const [bootstrapped, setBootstrapped] = useState(false)
@@ -131,7 +129,6 @@ export default function App() {
           setSummary({
             record_count: 0,
             kpi: null,
-            insights: [],
             public_facts: {},
             risk_alerts: null,
             region_stats: [],
@@ -267,7 +264,6 @@ export default function App() {
         onBasinFocus={selectBasin}
         hotspotRegions={hotspotRegions}
         gis={summary?.gis}
-        onAnalystOpen={() => setChatOpen(true)}
         onExport={exportCsv}
         recordCount={recordCount != null ? String(recordCount.toLocaleString(locale)) : '—'}
         locale={locale}
@@ -276,7 +272,6 @@ export default function App() {
         filterPayload={filterPayload}
         filterEmpty={filterEmpty}
       />
-      <ChatPanel filters={filterPayload} open={chatOpen} onToggle={() => setChatOpen((o) => !o)} experience />
     </ErrorBoundary>
   )
 }

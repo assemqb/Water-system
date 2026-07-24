@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from analytics.ai_insights import _chem, _pick, norm_lang
+from analytics.data_helpers import _chem, _pick
+from analytics.i18n_content import norm_lang
 
 
 def chart_narratives(df: pd.DataFrame, lang: str = "en") -> dict[str, str]:
