@@ -368,6 +368,17 @@ def _pick_valid_str(value: str | None, allowed: list[str], fallback: str) -> str
     return fallback
 
 
+def _effective_selection(selected, options):
+    """Treat empty multiselect as 'all options' to avoid zero-row filters."""
+    opts = list(options)
+    if not opts:
+        return []
+    if not selected:
+        return opts
+    valid = [item for item in selected if item in opts]
+    return valid or opts
+
+
 def main() -> None:
     section_options = ["Overview", "Map", "Trend", "Regions", "Prediction", "Export"]
     theme_options = ["Light", "Dark"]
@@ -447,25 +458,26 @@ def main() -> None:
         df = df[df["data_source"].isin(selected_sources)] if "data_source" in df.columns else df
 
         all_regions = sorted(df["Region"].dropna().unique())
-        all_years = sorted(df["Year"].dropna().unique())
+        all_years = sorted({int(y) for y in df["Year"].dropna().unique()})
         all_indicators = sorted(df["Pollutant"].dropna().unique())
+        year_options = set(all_years)
 
         qp_regions = [v for v in _parse_query_list("regions") if v in all_regions]
         qp_years = []
         for v in _parse_query_list("years"):
             try:
                 y = int(v)
-                if y in all_years:
+                if y in year_options:
                     qp_years.append(y)
             except ValueError:
                 continue
         qp_indicators = [v for v in _parse_query_list("indicators") if v in all_indicators]
 
-        if "selected_regions" not in st.session_state:
+        if "selected_regions" not in st.session_state or not st.session_state["selected_regions"]:
             st.session_state["selected_regions"] = qp_regions or all_regions
-        if "selected_years" not in st.session_state:
+        if "selected_years" not in st.session_state or not st.session_state["selected_years"]:
             st.session_state["selected_years"] = qp_years or all_years
-        if "selected_indicators" not in st.session_state:
+        if "selected_indicators" not in st.session_state or not st.session_state["selected_indicators"]:
             st.session_state["selected_indicators"] = qp_indicators or all_indicators
         if st.button("Reset filters", use_container_width=True):
             st.session_state["selected_regions"] = all_regions
@@ -488,6 +500,10 @@ def main() -> None:
             key="selected_indicators",
         )
 
+        selected_regions = _effective_selection(selected_regions, all_regions)
+        selected_years = _effective_selection(selected_years, all_years)
+        selected_indicators = _effective_selection(selected_indicators, all_indicators)
+
         with st.expander("About & Limitations"):
             st.markdown("**Dataset provenance**")
             dq = data_quality_summary(df)
@@ -504,8 +520,13 @@ def main() -> None:
     ].copy()
 
     if filtered_df.empty:
-        st.warning("No data for selected filters. Please widen your selection.")
+        st.warning("No data for selected filters. Please widen your selection or click **Reset filters** in the sidebar.")
         logger.warning("Empty DataFrame after filter application")
+        st.query_params["theme"] = theme_mode
+        st.query_params["section"] = nav_focus
+        st.query_params["regions"] = ",".join(selected_regions)
+        st.query_params["years"] = ",".join(str(int(y)) for y in selected_years)
+        st.query_params["indicators"] = ",".join(selected_indicators)
         return
 
     section_header("📋 Data Quality Summary")
