@@ -19,7 +19,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import Dict, Tuple
 
-# Streamlit Cloud runs this file from archive/; add project root for package imports.
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
