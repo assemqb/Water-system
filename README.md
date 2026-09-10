@@ -398,8 +398,6 @@ Capture screenshots after starting the backend and frontend:
 
 Save PNG files to `diploma_materials/07_screenshots/` (gitignored; for thesis documentation). See `diploma_materials/07_screenshots/README.txt` for naming conventions.
 
-**Live demo:** [http://localhost:5173](http://localhost:5173) (local)
-
 **API docs:** [http://localhost:8001/docs](http://localhost:8001/docs)
 
 ---

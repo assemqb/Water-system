@@ -25,9 +25,6 @@ frontend/dist/
 # Thesis asset bundle (screenshots and thesis figures — local only)
 diploma_materials/
 
-# Thesis manuscript (not part of the software system)
-db/Diploma_Water_Analysis_Raihan.docx
-
 # Local SQLite artifacts (master CSV in db/ is canonical)
 ollama/water_quality.db
 db/water_quality.db
