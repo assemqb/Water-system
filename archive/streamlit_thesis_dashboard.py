@@ -436,13 +436,13 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Filters")
-        all_sources = sorted(df["data_source"].dropna().unique()) if "data_source" in df.columns else ["reconstructed"]
+        all_sources = sorted(df["data_source"].dropna().unique()) if "data_source" in df.columns else ["observed_chemical"]
         source_labels = {
             "observed": "Observed (Kazhydromet)",
-            "reconstructed": "Reconstructed (chemical)",
+            "observed_chemical": "Observed (chemical, Kazhydromet bulletins)",
             "reference": "Reference (international)",
         }
-        default_sources = [s for s in ["observed", "reconstructed"] if s in all_sources] or all_sources
+        default_sources = [s for s in ["observed", "observed_chemical"] if s in all_sources] or all_sources
 
         if "selected_sources" not in st.session_state:
             st.session_state["selected_sources"] = default_sources
@@ -534,7 +534,7 @@ def main() -> None:
     dc1, dc2, dc3, dc4 = st.columns(4)
     dc1.metric("Records (n)", f"{dq['total']:,}")
     dc2.metric("Observed %", f"{dq.get('observed_pct', 0):.1f}%")
-    dc3.metric("Reconstructed %", f"{dq.get('reconstructed_pct', 0):.1f}%")
+    dc3.metric("Observed chemical %", f"{dq.get('observed_chemical_pct', 0):.1f}%")
     dc4.metric("Reference %", f"{dq.get('reference_pct', 0):.1f}%")
     card_close()
 

@@ -14,7 +14,7 @@ import {
   safeYears,
 } from './utils/array.js'
 
-const DEFAULT_SOURCES = ['observed', 'reconstructed']
+const DEFAULT_SOURCES = ['observed', 'observed_chemical']
 
 const PLOT_LAYOUT_BASE = {
   paper_bgcolor: 'transparent',

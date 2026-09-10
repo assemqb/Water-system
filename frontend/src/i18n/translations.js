@@ -132,7 +132,7 @@ const en = {
       eyebrow: 'Transparency',
       title: 'Data sources & methodology',
       lead: 'Open data lineage for trust and scientific reproducibility.',
-      sourcesBody: 'Kazhydromet basin observations, reconstructed chemical records, and reference datasets.',
+      sourcesBody: 'Kazhydromet basin observations, real chemical records from official monthly bulletins, and reference datasets.',
       coverageBody: 'Master dataset merges hydrology and chemistry for a unified national view.',
       standardsBody: 'WQI uses SanPiN MPC standards; not a substitute for regulatory compliance.',
     },
@@ -214,7 +214,7 @@ const en = {
   },
   sources: {
     observed: 'Kazhydromet',
-    reconstructed: 'Chemical',
+    observed_chemical: 'Chemical',
     reference: 'Reference',
   },
   errors: {
@@ -553,7 +553,7 @@ const ru = {
       eyebrow: 'Прозрачность',
       title: 'Источники и методология',
       lead: 'Открытая линия данных для доверия и науки.',
-      sourcesBody: 'Казгидромет, реконструированные химические записи, справочные данные.',
+      sourcesBody: 'Казгидромет, реальные химические замеры из официальных бюллетеней, справочные данные.',
       coverageBody: 'Единый национальный датасет гидрологии и химии.',
       standardsBody: 'WQI по SanPiN / ПДК; не нормативная рекомендация.',
     },
@@ -620,7 +620,7 @@ const ru = {
   },
   sources: {
     observed: 'Казгидромет',
-    reconstructed: 'Хим. данные',
+    observed_chemical: 'Хим. данные',
     reference: 'Справочные',
   },
   errors: {
@@ -960,7 +960,7 @@ const kk = {
       eyebrow: 'Ашықтық',
       title: 'Дереккөздер және әдістеме',
       lead: 'Сенім мен ғылым үшін ашық деректер желісі.',
-      sourcesBody: 'Казгидромет, химиялық жазбалар, анықтамалық деректер.',
+      sourcesBody: 'Казгидромет, ресми бюллетеньдерден алынған нақты химиялық өлшемдер, анықтамалық деректер.',
       coverageBody: 'Гидрология мен химияны біріктіретін ұлттық датасет.',
       standardsBody: 'WQI SanPiN / ШРК бойынша; нормативтік ұсыныс емес.',
     },
@@ -1027,7 +1027,7 @@ const kk = {
   },
   sources: {
     observed: 'Казгидромет',
-    reconstructed: 'Химия',
+    observed_chemical: 'Химия',
     reference: 'Анықтамалық',
   },
   errors: {

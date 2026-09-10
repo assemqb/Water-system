@@ -27,7 +27,12 @@ GEOJSON_PATH = PROJECT_ROOT / "kz.json"
 
 # Canonical master dataset (built by data/build_dataset.py)
 MASTER_DATASET_PATH = DATA_DIR / "kazakhstan_water_master.csv"
+# Superseded statistically-reconstructed chemical dataset — kept for provenance,
+# no longer loaded by data/build_dataset.py (see REAL_POLLUTION_PATH).
 LEGACY_DATASET_PATH = DATA_DIR / "Kazakhstan_Water_Pollution_Dataset.csv"
+# Real chemical measurements extracted from official Kazhydromet monthly
+# bulletins (data/kazhydromet_bulletin_etl.py). Replaces LEGACY_DATASET_PATH.
+REAL_POLLUTION_PATH = DATA_DIR / "kazhydromet_real_pollution_2025.csv"
 
 # Default path used by the dashboard
 DATA_PATH = MASTER_DATASET_PATH
@@ -149,7 +154,7 @@ REGION_NAME_MAP: Dict[str, str] = {
 # ── Data source labels (provenance) ───────────────────────────────────────────
 DATA_SOURCE_LABELS: Dict[str, str] = {
     "observed": "Kazhydromet observed (water level)",
-    "reconstructed": "Statistically reconstructed (chemical pollution)",
+    "observed_chemical": "Kazhydromet observed (chemical pollution, official bulletins)",
     "reference": "International reference (Kaggle potability)",
 }
 
@@ -209,13 +214,15 @@ MIN_SAMPLES_DEEP_LEARNING = 50
 
 # ── Dashboard copy ────────────────────────────────────────────────────────────
 DATASET_BANNER = (
-    "Dataset: Hybrid (observed + statistically reconstructed). "
+    "Dataset: Hybrid (observed water level + observed chemical pollution + international reference). "
     "See methodology for full disclosure."
 )
 
 LIMITATIONS = [
     "L1: Sample size for annual ML forecasting is limited (n≈5 years for pollution aggregates).",
-    "L2: Chemical pollution records include statistically reconstructed values where direct measurements were unavailable.",
+    "L2: Chemical pollution records are real measurements extracted from official Kazhydromet monthly "
+    "environmental bulletins (2025, all 8 basins); a small number of ingredient names use nitrate-nitrogen "
+    "and were converted to nitrate-ion equivalents (×4.4268, molar mass ratio).",
     "L3: Water-level observations (Kazhydromet) proxy basin hydrological state, not chemical concentration.",
     "L4: International reference data (Kaggle) is included for methodological comparison only, not for Kazakhstan regulatory decisions.",
     "L5: Tree-based and boosting models on n<10 observations demonstrate overfitting; Linear Regression is the primary interpretable model.",

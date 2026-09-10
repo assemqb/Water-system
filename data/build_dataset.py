@@ -3,7 +3,8 @@ Build the unified Kazakhstan water quality master dataset.
 
 Sources:
   1. Kazhydromet basin CSVs (observed water levels)
-  2. Legacy KZ pollution CSV (reconstructed chemical records)
+  2. Kazhydromet monthly environmental bulletins (real observed chemical
+     records, extracted by data/kazhydromet_bulletin_etl.py)
   3. Kaggle Water Potability (international reference)
 
 Run: python -m data.build_dataset
@@ -29,9 +30,9 @@ from analytics.wqi import (
 from config.logging_config import get_logger
 from config.settings import (
     BASIN_FILES,
-    LEGACY_DATASET_PATH,
     MASTER_DATASET_PATH,
     POLLUTANTS,
+    REAL_POLLUTION_PATH,
     SQLITE_PATH,
     STATION_MAP,
     WATER_POTABILITY_PATH,
@@ -101,11 +102,15 @@ def _load_kazhydromet_basins() -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True)
 
 
-def _load_legacy_pollution() -> pd.DataFrame:
-    """Load legacy 520-row pollution dataset and recalculate WQI (Option A)."""
-    path = LEGACY_DATASET_PATH
+def _load_real_pollution() -> pd.DataFrame:
+    """Load real Kazhydromet chemical measurements (official monthly bulletins)."""
+    path = REAL_POLLUTION_PATH
     if not path.exists():
-        logger.warning("Legacy dataset not found: %s", path)
+        logger.warning(
+            "Real pollution dataset not found: %s — run "
+            "`python3 -m data.kazhydromet_bulletin_etl` to build it",
+            path,
+        )
         return pd.DataFrame(columns=MASTER_COLUMNS)
 
     raw = pd.read_csv(path)
@@ -133,14 +138,14 @@ def _load_legacy_pollution() -> pd.DataFrame:
                 "Hazard_Class": hazard,
                 "Ratio": ratio,
                 "Risk_Level": classify_risk_level(ratio),
-                "data_source": "reconstructed",
+                "data_source": "observed_chemical",
                 "country": "Kazakhstan",
                 "station_code": np.nan,
-                "description": "Statistically reconstructed chemical pollution record",
+                "description": f"Kazhydromet official bulletin — {row['source_bulletin']}",
             }
         )
     df = pd.DataFrame(rows)
-    logger.info("Loaded legacy pollution: %d rows (WQI recalculated)", len(df))
+    logger.info("Loaded real Kazhydromet pollution: %d rows", len(df))
     return df
 
 
@@ -186,12 +191,12 @@ def build_master_dataset() -> pd.DataFrame:
     """Combine all sources into a single standardized master DataFrame."""
     parts = [
         _load_kazhydromet_basins(),
-        _load_legacy_pollution(),
+        _load_real_pollution(),
         _load_potability_reference(),
     ]
     combined = pd.concat([p for p in parts if len(p) > 0], ignore_index=True)
     combined = combined.drop_duplicates(
-        subset=["data_source", "Date", "station_code", "Pollutant", "Concentration"],
+        subset=["data_source", "Date", "Basin", "station_code", "Pollutant", "Concentration"],
         keep="first",
     )
     combined = combined[combined["WQI_Score"].notna() | combined["Concentration"].notna()]

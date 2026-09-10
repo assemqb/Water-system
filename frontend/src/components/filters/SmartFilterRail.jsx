@@ -68,7 +68,7 @@ export function SmartFilterRail({ options, filters, onChange, onReset, expanded 
 
   const sourceLabels = {
     observed: t('sources.observed'),
-    reconstructed: t('sources.reconstructed'),
+    observed_chemical: t('sources.observed_chemical'),
     reference: t('sources.reference'),
   }
 

@@ -10,7 +10,7 @@ Analytical platform for exploring, analyzing, and forecasting surface water qual
 
 **AquaMonitor** is a bachelor diploma project: *Development of a System for Analyzing and Visualizing Water Pollution Levels in Kazakhstan Using Open Environmental Data.*
 
-The system integrates a **React** web frontend, a **FastAPI** REST backend, and a **Python analytics layer** over a hybrid historical monitoring dataset of **52,000+ records** spanning Kazhydromet hydrological observations, reconstructed chemical pollution records, and international reference data.
+The system integrates a **React** web frontend, a **FastAPI** REST backend, and a **Python analytics layer** over a hybrid historical monitoring dataset of **53,000+ records** spanning Kazhydromet hydrological observations, real chemical pollution measurements extracted from official Kazhydromet monthly bulletins, and international reference data.
 
 Users can filter by region, river basin, pollutant, and year; inspect WQI and MPC-based risk metrics; compare periods and regions; run **8 machine learning models** for temporal forecasting; explore an interactive **Kazakhstan map** with GIS layers; and consult an **Ollama-powered Environmental Intelligence Analyst** in **Kazakh, Russian, and English**.
 
@@ -95,15 +95,17 @@ Detailed diagrams and API flows: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## 6. Dataset
 
-**Master file:** `db/kazakhstan_water_master.csv` (~52,594 rows)
+**Master file:** `db/kazakhstan_water_master.csv` (~53,003 rows)
 
 | Source label | Rows (approx.) | Description |
 |--------------|----------------|-------------|
 | `observed` | 48,798 | Kazhydromet water-level observations (8 river basins) |
-| `reconstructed` | 520 | Chemical pollution records (WQI recalculated) |
+| `observed_chemical` | 929 | Real chemical pollution measurements extracted from official Kazhydromet monthly environmental bulletins (2025, all 8 basins) |
 | `reference` | 3,276 | Kaggle water potability (methodological comparison only) |
 
-**Legacy file:** `db/Kazakhstan_Water_Pollution_Dataset.csv` — source for reconstructed chemical records.
+**Real chemical data:** `db/kazhydromet_real_pollution_2025.csv` — extracted by `data/kazhydromet_bulletin_etl.py` from the PDF bulletins Kazhydromet's oblast branches publish monthly ("Информационный бюллетень о состоянии окружающей среды"), each including a hydrochemical table of measured pollutant concentrations for surface water objects. Six pollutants with a defined Kazakhstan SanPiN fishery MPC are extracted: Nitrates, Copper, Sulfates, Zinc, Phenols, Oil Products. Source PDF is recorded per row (`source_bulletin` column) for traceability; the full URL manifest is `ollama/kazhydromet_bulletin_manifest_2025.json`.
+
+**Superseded:** `db/Kazakhstan_Water_Pollution_Dataset.csv` — the original 520-row statistically-reconstructed chemical dataset, kept in the repo for provenance/history but no longer loaded by the build pipeline.
 
 **Raw inputs for rebuild:** Kazhydromet basin CSVs and reference files in `ollama/` (see [Rebuilding the Dataset](#16-rebuilding-the-dataset)).
 
@@ -329,9 +331,22 @@ python3 -m data.build_dataset
 
 - `ollama/balhash-alakol.csv`, `ertis.csv`, `esil.csv`, `nura-sarysu.csv`, `shu-talas.csv`, `syrdarya.csv`, `tobol-torgai.csv`, `ural.csv`
 - `ollama/water_potability.csv`
-- `db/Kazakhstan_Water_Pollution_Dataset.csv`
+- `db/kazhydromet_real_pollution_2025.csv`
 
 **Output:** `db/kazakhstan_water_master.csv`
+
+To refresh the real chemical dataset itself (re-download the latest Kazhydromet
+bulletins and re-extract), run this before `build_dataset`:
+
+```bash
+python3 -m data.kazhydromet_bulletin_etl --year 2025
+```
+
+This needs the `pdftotext` binary (poppler-utils: `brew install poppler` /
+`apt-get install poppler-utils`). It downloads the monthly PDFs listed in
+`ollama/kazhydromet_bulletin_manifest_2025.json`, extracts hydrochemical
+readings for the six MPC-tracked pollutants, and writes
+`db/kazhydromet_real_pollution_2025.csv`.
 
 ---
 
@@ -371,10 +386,11 @@ Water-system/
 │   ├── chat_assistant.py
 │   └── ollama_client.py
 ├── config/                   # MPC, thresholds, paths, limitations
-├── data/                     # loader, validator, build_dataset, gis/
+├── data/                     # loader, validator, build_dataset, bulletin ETL, gis/
 ├── db/
 │   ├── kazakhstan_water_master.csv
-│   └── Kazakhstan_Water_Pollution_Dataset.csv
+│   ├── kazhydromet_real_pollution_2025.csv
+│   └── Kazakhstan_Water_Pollution_Dataset.csv   # superseded, kept for provenance
 ├── visualization/            # Plotly chart builders (Python)
 ├── tests/                    # pytest suite
 ├── ollama/                   # Kazhydromet raw CSVs for dataset rebuild
@@ -430,7 +446,7 @@ A legacy Streamlit thesis prototype is preserved in `archive/streamlit_thesis_da
 Documented in `config/settings.py` (L1–L6):
 
 1. **L1:** Small sample for annual ML forecasting (n ≈ 5 years for pollution aggregates)
-2. **L2:** Chemical pollution records include statistically reconstructed values where direct measurements were unavailable
+2. **L2:** Chemical pollution records are real measurements extracted from official Kazhydromet monthly bulletins (2025, all 8 basins); a small number of readings reported as nitrate-nitrogen were converted to nitrate-ion equivalents (×4.4268)
 3. **L3:** Kazhydromet water-level observations proxy hydrological state, not chemical concentration
 4. **L4:** International reference data (Kaggle) is for methodological comparison only
 5. **L5:** Tree-based and boosting models on n < 10 demonstrate overfitting; trust cross-validation metrics

@@ -44,7 +44,7 @@ logger = get_logger(__name__)
 
 SOURCE_LABELS = {
     "observed": "Observed (Kazhydromet)",
-    "reconstructed": "Reconstructed (chemical)",
+    "observed_chemical": "Observed (chemical, Kazhydromet bulletins)",
     "reference": "Reference (international)",
 }
 

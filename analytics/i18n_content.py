@@ -29,7 +29,7 @@ WHY_NOT_DL = {
 LIMITATIONS_I18N = {
     "en": [
         "L1: Annual ML forecasting uses limited yearly aggregates (n≈5).",
-        "L2: Chemical records include reconstructed values where direct sampling was unavailable.",
+        "L2: Chemical records are real measurements from official Kazhydromet monthly bulletins (2025).",
         "L3: Water-level data reflects hydrology, not chemical concentration.",
         "L4: International reference data is for methodology only.",
         "L5: Tree models overfit on small n; linear regression is primary for trends.",
@@ -37,7 +37,7 @@ LIMITATIONS_I18N = {
     ],
     "ru": [
         "L1: Годовой ML-прогноз ограничен малым числом лет (n≈5).",
-        "L2: Химические записи включают реконструкцию при отсутствии прямых замеров.",
+        "L2: Химические данные — реальные замеры из официальных ежемесячных бюллетеней Казгидромета (2025).",
         "L3: Уровень воды отражает гидрологию, не химию.",
         "L4: Международные данные — только для методологии.",
         "L5: Деревья переобучаются на малом n; для трендов — линейная регрессия.",
@@ -45,7 +45,7 @@ LIMITATIONS_I18N = {
     ],
     "kk": [
         "L1: Жылдық ML болжамы шектеулі (n≈5).",
-        "L2: Химиялық жазбаларда реконструкция бар.",
+        "L2: Химиялық деректер — Қазгидромет бюллетеньдерінен алынған нақты өлшемдер (2025).",
         "L3: Су деңгейі — гидрология, химия емес.",
         "L4: Халықаралық деректер — тек методология.",
         "L5: Ағаш модельдері кіші n-де артық оқиды; тренд — сызықты регрессия.",

@@ -46,8 +46,8 @@ def enrich_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         out["Ratio"] = np.where(out["MPC"] > 0, out["Concentration"] / out["MPC"], np.nan)
 
     if "data_source" not in out.columns:
-        out["data_source"] = "reconstructed"
-        logger.warning("data_source column missing — defaulting to 'reconstructed'")
+        out["data_source"] = "unknown"
+        logger.warning("data_source column missing — defaulting to 'unknown'")
 
     if "Risk_Level" not in out.columns and "Ratio" in out.columns:
         from analytics.hazard import classify_risk_level
@@ -75,6 +75,6 @@ def data_quality_summary(df: pd.DataFrame) -> dict:
         "total": total,
         "sources": counts.to_dict(),
         "observed_pct": float(counts.get("observed", 0)),
-        "reconstructed_pct": float(counts.get("reconstructed", 0)),
+        "observed_chemical_pct": float(counts.get("observed_chemical", 0)),
         "reference_pct": float(counts.get("reference", 0)),
     }
