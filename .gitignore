@@ -32,3 +32,8 @@ db/water_quality.db
 # Generated output artifacts (regenerate locally; keep directory placeholder)
 outputs/*
 !outputs/.gitkeep
+
+# Raw Kazhydromet bulletin PDFs/text cache (regenerate via
+# data/kazhydromet_bulletin_etl.py; extracted CSVs in db/ are canonical)
+ollama/bulletin_pdfs/
+ollama/bulletin_txt/

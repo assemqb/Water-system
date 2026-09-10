@@ -95,15 +95,21 @@ Detailed diagrams and API flows: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## 6. Dataset
 
-**Master file:** `db/kazakhstan_water_master.csv` (~53,003 rows)
+**Master file:** `db/kazakhstan_water_master.csv` (~53,432 rows)
 
 | Source label | Rows (approx.) | Description |
 |--------------|----------------|-------------|
 | `observed` | 48,798 | Kazhydromet water-level observations (8 river basins) |
-| `observed_chemical` | 929 | Real chemical pollution measurements extracted from official Kazhydromet monthly environmental bulletins (2025, all 8 basins) |
+| `observed_chemical` | 1,358 | Real chemical pollution measurements extracted from official Kazhydromet monthly environmental bulletins (983 for 2025 — 11 of 12 months, all 8 basins; 375 for 2024 — the 6 months with full 8-basin coverage: Jun, Aug–Dec) |
 | `reference` | 3,276 | Kaggle water potability (methodological comparison only) |
 
-**Real chemical data:** `db/kazhydromet_real_pollution_2025.csv` — extracted by `data/kazhydromet_bulletin_etl.py` from the PDF bulletins Kazhydromet's oblast branches publish monthly ("Информационный бюллетень о состоянии окружающей среды"), each including a hydrochemical table of measured pollutant concentrations for surface water objects. Six pollutants with a defined Kazakhstan SanPiN fishery MPC are extracted: Nitrates, Copper, Sulfates, Zinc, Phenols, Oil Products. Source PDF is recorded per row (`source_bulletin` column) for traceability; the full URL manifest is `ollama/kazhydromet_bulletin_manifest_2025.json`.
+**Real chemical data:** `db/kazhydromet_real_pollution_2025.csv` and `db/kazhydromet_real_pollution_2024.csv` — extracted by `data/kazhydromet_bulletin_etl.py` from the PDF bulletins Kazhydromet's oblast branches publish monthly ("Информационный бюллетень о состоянии окружающей среды"), each including a hydrochemical table of measured pollutant concentrations for surface water objects. Six pollutants with a defined MPC are extracted: Nitrates, Copper, Sulfates, Zinc, Phenols, Oil Products (see section 7 for which standard each MPC comes from). Every row carries:
+
+- `source_bulletin` — the exact source PDF filename, for traceability (full URL manifests: `ollama/kazhydromet_bulletin_manifest_2025.json`, `..._2024.json`)
+- `water_body` / `water_body_type` (`river` or `lake`) — which specific river, lake, reservoir, or sea point the reading is from, when the source table's layout allows it to be determined (~99% of rows for 2025, 100% for the 2024 months added); population by exact table layout is described in the module docstring. **Important for interpretation:** Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not pollution — filter on `water_body_type` before treating a high Sulfates ratio there as a pollution signal.
+- `station` — present in the schema for a numbered monitoring-post code, but these bulletins organize hydrochemical readings by water-body name/location description rather than a numeric post code (unlike the separate water-level hydrological posts in `STATION_MAP`), so it is empty for this data source.
+
+**Coverage note:** row volume is not uniform across months — Kazhydromet's bulletins report substantially more readings of these 6 pollutants in the ice-free season (May–October: roughly 100–130 rows/month) than in winter (November–April: roughly 35–42 rows/month). This was verified by reading source bulletins directly, not assumed: winter "class exceedance" tables are dominated by suspended solids/turbidity (ice break-up, effluent) rather than the 6 tracked substances, and the richer multi-parameter "Ингредиенттер атауы" panel tables (which report all 6 together) appear more often in the warmer months. Phenols (24 rows in 2025) is the rarest because it is usually only reported in those fuller panels, close to its detection floor (0.001 mg/dm³).
 
 **Superseded:** `db/Kazakhstan_Water_Pollution_Dataset.csv` — the original 520-row statistically-reconstructed chemical dataset, kept in the repo for provenance/history but no longer loaded by the build pipeline.
 
@@ -111,7 +117,7 @@ Detailed diagrams and API flows: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Key columns
 
-`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`
+`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`, `water_body`, `water_body_type`
 
 ---
 
@@ -141,9 +147,32 @@ WQI = (Concentration / MPC) × 50
 - WQI < 50 → below MPC (safer)
 - WQI > 100 → above 2× MPC
 
-The formula follows Horton (1965) / Brown et al. (1970) sub-index methodology, adapted to Kazakhstan SanPiN fishery MPC standards. Implementation: `analytics/wqi.py`, `config/settings.py`.
+The formula follows Horton (1965) / Brown et al. (1970) sub-index methodology, single-parameter sub-indices anchored to a per-pollutant MPC. Implementation: `analytics/wqi.py`, `config/settings.py`.
 
-Pollutants with defined MPC values include Nitrates, Copper, Sulfates, Zinc, Phenols, and Oil Products.
+### MPC standards used, per pollutant
+
+Verified against primary sources (2026-09) — the six MPCs are **not** all from one standard, despite earlier code comments calling them uniformly "SanPiN fishery":
+
+| Pollutant | MPC (mg/dm³) | Standard actually used | Primary source |
+|---|---|---|---|
+| Nitrates (as NO3⁻) | 45.0 | Both standards agree (coincidentally the same value) | RF fishery: Order of the RF Ministry of Agriculture No. 552 (2016); KZ drinking/household-cultural: Kazakhstan sanitary rules "Санитарно-эпидемиологические требования к водоисточникам..." (FAOLEX KAZ112216, Table 1) |
+| Copper | 0.001 | RF fishery MPC (KZ drinking-water value is 1.0 — not used) | Order No. 552 (2016) |
+| Sulfates | 500.0 | **KZ drinking-water MPC** (RF fishery value is 100.0 — not used) | FAOLEX KAZ112216, Table 1, item 24 |
+| Zinc | 0.01 | RF fishery MPC (KZ drinking-water value is 5.0 — not used) | Order No. 552 (2016) |
+| Phenols | 0.001 | RF fishery MPC (KZ drinking "phenol index" is 0.25 — not used) | Order No. 552 (2016) |
+| Oil Products | 0.05 | RF fishery MPC (KZ drinking-water value is 0.1 — not used) | Order No. 552 (2016) |
+
+In short: four of the six pollutants (Copper, Zinc, Phenols, Oil Products) use the stricter Russian **fishery** (рыбохозяйственное) standard, the conventional basis for a pollution/aquatic-life index. **Sulfates uses the Kazakhstan drinking-water standard instead** (500 vs. the fishery standard's 100 mg/dm³) — a 5× difference. This is a disclosed mixed methodology (see limitations L6/L7), not a data error: it was already present in the codebase before the 2025/2024 real-data replacement and has not been changed, since correcting it would retroactively reclassify every historical Sulfates ratio/hazard/WQI value — a methodology decision left to the thesis author.
+
+### Nitrate unit conversion
+
+A number of bulletins report "нитратты азот" (nitrate-**nitrogen**, NO3-N) instead of "нитрат-ионы"/"нитраттар" (nitrate-**ion**, NO3⁻) — chemically different quantities. Every such reading is converted to a NO3⁻ equivalent before comparison to the NO3⁻-based MPC above:
+
+```
+NO3⁻ = NO3-N × 4.4266
+```
+
+(molar mass of NO3⁻ ÷ molar mass of N, using IUPAC standard atomic weights: (14.007 + 3×15.999) / 14.007 = 4.4266). Implementation and the term-detection list: `data/kazhydromet_bulletin_etl.py` (`NITRATE_N_TO_ION`, `TERMS`).
 
 ---
 
@@ -160,7 +189,9 @@ Linear Regression, Decision Tree, Random Forest, Extra Trees, ElasticNet, XGBoos
 - Metrics: MAE, RMSE, R², MAPE (cross-validated)
 - Reproducibility: `random_state=42` (`config/settings.py`)
 
-**Important:** Annual aggregation yields approximately **n ≈ 5** temporal points for pollution forecasting. Tree and boosting models may show high in-sample R² due to overfitting; **Linear Regression** is the primary interpretable baseline. Deep learning is intentionally excluded (requires n ≥ 50). See `analytics/ml_engine.py` and limitations L1, L5 in `config/settings.py`.
+**Important:** Annual aggregation yields approximately **n ≈ 5** temporal points when using the multi-decade water-level series (`Water_Level_cm`, 1995–2022). Tree and boosting models may show high in-sample R² due to overfitting; **Linear Regression** is the primary interpretable baseline. Deep learning is intentionally excluded (requires n ≥ 50). See `analytics/ml_engine.py` and limitations L1, L5 in `config/settings.py`.
+
+**Chemical-pollutant forecasting specifically has only n=2 years** (2024, 2025 — the real Kazhydromet bulletin data; see section 6). `dashboard_service.ml_forecast()` requires at least 2 yearly points and returns `{"ok": false}` (rendered as an "unavailable" message in the Forecast tab) rather than a misleading result if fewer are available — this guard is what protected the tab when the chemical dataset was briefly single-year (2025 only) before the 2024 bulletins were added. Even at n=2, cross-validated metrics (which need n≥3) are `NaN` by design; only the two-point trend line and next-year extrapolation are meaningful, and should be read as illustrative, not predictive. Extending coverage to more historical years (see section 16) is the primary way to make this forecast substantive for pollutants.
 
 ---
 
@@ -331,22 +362,36 @@ python3 -m data.build_dataset
 
 - `ollama/balhash-alakol.csv`, `ertis.csv`, `esil.csv`, `nura-sarysu.csv`, `shu-talas.csv`, `syrdarya.csv`, `tobol-torgai.csv`, `ural.csv`
 - `ollama/water_potability.csv`
-- `db/kazhydromet_real_pollution_2025.csv`
+- `db/kazhydromet_real_pollution_2025.csv`, `db/kazhydromet_real_pollution_2024.csv` (every `kazhydromet_real_pollution_*.csv` in `db/` is loaded and combined)
 
 **Output:** `db/kazakhstan_water_master.csv`
 
-To refresh the real chemical dataset itself (re-download the latest Kazhydromet
-bulletins and re-extract), run this before `build_dataset`:
+To refresh a real chemical dataset (re-download the Kazhydromet bulletins for
+a year and re-extract), run this before `build_dataset`:
 
 ```bash
 python3 -m data.kazhydromet_bulletin_etl --year 2025
+python3 -m data.kazhydromet_bulletin_etl --year 2024   # or any other year with a manifest
 ```
 
 This needs the `pdftotext` binary (poppler-utils: `brew install poppler` /
 `apt-get install poppler-utils`). It downloads the monthly PDFs listed in
-`ollama/kazhydromet_bulletin_manifest_2025.json`, extracts hydrochemical
-readings for the six MPC-tracked pollutants, and writes
-`db/kazhydromet_real_pollution_2025.csv`.
+`ollama/kazhydromet_bulletin_manifest_<year>.json`, extracts hydrochemical
+readings (with river/lake attribution where the source table allows it) for
+the six MPC-tracked pollutants, and writes
+`db/kazhydromet_real_pollution_<year>.csv`.
+
+**Building a manifest for a new year:** `ollama/kazhydromet_bulletin_manifest_<year>.json`
+maps `"{Basin}_{YYYY-MM}"` to a source PDF URL. Kazhydromet's monthly-bulletin
+listing page (`/ecology/ezhemesyachnyy-informacionnyy-byulleten-o-sostoyanii-okruzhayuschey-sredy/<year>`)
+has a year selector back to 2017, but full 8-basin coverage varies sharply by
+year — verified 2026-09: 2020 has none; 2021 (32%) and 2022 (39%) are too
+sparse for a basin-comparable month; 2023 (54%) and 2024 (57%) each have a
+handful of fully-covered months (2023: Mar/May/Jun/Aug; 2024: Jun, Aug–Dec —
+already added above); 2025 (98%) is the only near-complete year. Extending
+further into 2023 (and cherry-picking the partially-covered months of other
+years for single-basin case studies rather than basin comparisons) is
+possible with this same pipeline.
 
 ---
 
@@ -443,14 +488,15 @@ A legacy Streamlit thesis prototype is preserved in `archive/streamlit_thesis_da
 
 ## 21. Limitations
 
-Documented in `config/settings.py` (L1–L6):
+Documented in `config/settings.py` (L1–L7):
 
-1. **L1:** Small sample for annual ML forecasting (n ≈ 5 years for pollution aggregates)
-2. **L2:** Chemical pollution records are real measurements extracted from official Kazhydromet monthly bulletins (2025, all 8 basins); a small number of readings reported as nitrate-nitrogen were converted to nitrate-ion equivalents (×4.4268)
+1. **L1:** Small sample for annual ML forecasting — n ≈ 5 years using the multi-decade water-level series; only n = 2 years (2024, 2025) for chemical-pollutant-filtered forecasting (see section 8)
+2. **L2:** Chemical pollution records are real measurements extracted from official Kazhydromet monthly bulletins (2025: 11/12 months; 2024: 6 fully-covered months), not statistically reconstructed; readings reported as nitrate-nitrogen were converted to nitrate-ion equivalents (×4.4266, see section 7)
 3. **L3:** Kazhydromet water-level observations proxy hydrological state, not chemical concentration
 4. **L4:** International reference data (Kaggle) is for methodological comparison only
 5. **L5:** Tree-based and boosting models on n < 10 demonstrate overfitting; trust cross-validation metrics
-6. **L6:** WQI uses SanPiN MPC standards with disclosed hybrid dataset provenance
+6. **L6:** WQI uses MPC-anchored sub-indices; the 6 MPCs mix two different official standards — see section 7 for the full sourced table (this is disclosure, not a data error)
+7. **L7:** Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not pollution — check `water_body_type` before reading a high Sulfates ratio there as a pollution signal
 
 ---
 

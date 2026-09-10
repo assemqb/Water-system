@@ -32,7 +32,7 @@ from config.settings import (
     BASIN_FILES,
     MASTER_DATASET_PATH,
     POLLUTANTS,
-    REAL_POLLUTION_PATH,
+    REAL_POLLUTION_PATHS,
     SQLITE_PATH,
     STATION_MAP,
     WATER_POTABILITY_PATH,
@@ -56,6 +56,8 @@ MASTER_COLUMNS = [
     "country",
     "station_code",
     "description",
+    "water_body",
+    "water_body_type",
 ]
 
 
@@ -103,17 +105,15 @@ def _load_kazhydromet_basins() -> pd.DataFrame:
 
 
 def _load_real_pollution() -> pd.DataFrame:
-    """Load real Kazhydromet chemical measurements (official monthly bulletins)."""
-    path = REAL_POLLUTION_PATH
-    if not path.exists():
+    """Load real Kazhydromet chemical measurements (official monthly bulletins, all years)."""
+    if not REAL_POLLUTION_PATHS:
         logger.warning(
-            "Real pollution dataset not found: %s — run "
-            "`python3 -m data.kazhydromet_bulletin_etl` to build it",
-            path,
+            "No real pollution dataset found in db/ — run "
+            "`python3 -m data.kazhydromet_bulletin_etl --year <year>` to build one"
         )
         return pd.DataFrame(columns=MASTER_COLUMNS)
 
-    raw = pd.read_csv(path)
+    raw = pd.concat([pd.read_csv(p) for p in REAL_POLLUTION_PATHS], ignore_index=True)
     raw["Date"] = pd.to_datetime(raw["Date"], errors="coerce")
     rows: list[dict] = []
     for _, row in raw.iterrows():
@@ -140,8 +140,10 @@ def _load_real_pollution() -> pd.DataFrame:
                 "Risk_Level": classify_risk_level(ratio),
                 "data_source": "observed_chemical",
                 "country": "Kazakhstan",
-                "station_code": np.nan,
+                "station_code": row.get("station") or np.nan,
                 "description": f"Kazhydromet official bulletin — {row['source_bulletin']}",
+                "water_body": row.get("water_body") or "",
+                "water_body_type": row.get("water_body_type") or "",
             }
         )
     df = pd.DataFrame(rows)
@@ -196,7 +198,7 @@ def build_master_dataset() -> pd.DataFrame:
     ]
     combined = pd.concat([p for p in parts if len(p) > 0], ignore_index=True)
     combined = combined.drop_duplicates(
-        subset=["data_source", "Date", "Basin", "station_code", "Pollutant", "Concentration"],
+        subset=["data_source", "Date", "Basin", "water_body", "station_code", "Pollutant", "Concentration"],
         keep="first",
     )
     combined = combined[combined["WQI_Score"].notna() | combined["Concentration"].notna()]

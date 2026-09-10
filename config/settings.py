@@ -31,8 +31,9 @@ MASTER_DATASET_PATH = DATA_DIR / "kazakhstan_water_master.csv"
 # no longer loaded by data/build_dataset.py (see REAL_POLLUTION_PATH).
 LEGACY_DATASET_PATH = DATA_DIR / "Kazakhstan_Water_Pollution_Dataset.csv"
 # Real chemical measurements extracted from official Kazhydromet monthly
-# bulletins (data/kazhydromet_bulletin_etl.py). Replaces LEGACY_DATASET_PATH.
-REAL_POLLUTION_PATH = DATA_DIR / "kazhydromet_real_pollution_2025.csv"
+# bulletins (data/kazhydromet_bulletin_etl.py --year <year>). One file per
+# year; all are loaded and combined. Replaces LEGACY_DATASET_PATH.
+REAL_POLLUTION_PATHS = sorted(DATA_DIR.glob("kazhydromet_real_pollution_*.csv"))
 
 # Default path used by the dashboard
 DATA_PATH = MASTER_DATASET_PATH
@@ -66,7 +67,30 @@ HAZARD_THRESHOLDS: Dict[str, float] = {
     "moderate_max": 2.0,   # 1.0 ≤ ratio < 2.0 → Moderate; ratio ≥ 2.0 → High
 }
 
-# ── Pollutants: MPC (mg/L, SanPiN fishery-use) + intrinsic hazard class ───────
+# ── Pollutants: MPC (mg/L) + intrinsic hazard class ───────────────────────────
+# The six MPCs below are drawn from TWO different official standards, not one
+# — despite prior code/README comments calling all of them "SanPiN fishery".
+# Verified against primary sources (2026-09):
+#
+#   Pollutant     MPC (mg/L)  Standard actually matched                                    Source
+#   Nitrates      45.0        BOTH standards agree (as NO3-, coincidentally the same value) RF fishery: Order of the RF Ministry
+#                                                                                            of Agriculture No. 552 (2016); KZ
+#                                                                                            drinking/household-cultural use:
+#                                                                                            Kazakhstan sanitary rules "Санитарно-
+#                                                                                            эпидемиологические требования к
+#                                                                                            водоисточникам..." (FAOLEX KAZ112216), Table 1
+#   Copper        0.001       RF fishery MPC (KZ drinking-water value is 1.0, not used)      Order No. 552 (2016)
+#   Sulfates      500.0       KZ drinking-water MPC (RF fishery value is 100.0, not used)    FAOLEX KAZ112216, Table 1, item 24
+#   Zinc          0.01        RF fishery MPC (KZ drinking-water value is 5.0, not used)       Order No. 552 (2016)
+#   Phenols       0.001       RF fishery MPC (KZ drinking "phenol index" is 0.25, not used)   Order No. 552 (2016)
+#   Oil Products  0.05        RF fishery MPC (KZ drinking-water value is 0.1, not used)       Order No. 552 (2016)
+#
+# In short: Copper/Zinc/Phenols/Oil Products use the stricter Russian fishery
+# (рыбохозяйственное) standard, which protects aquatic life and is the
+# conventional basis for a water-quality/pollution index; Sulfates uses the
+# Kazakhstan drinking-water (хозяйственно-питьевое) standard instead — a
+# mixed methodology, disclosed here and in README section 7 and limitation
+# L2/L7, not a data error. See README section 7 for the full writeup.
 @dataclass(frozen=True)
 class PollutantSpec:
     """MPC reference and intrinsic hazard class for a pollutant."""
@@ -221,12 +245,17 @@ DATASET_BANNER = (
 LIMITATIONS = [
     "L1: Sample size for annual ML forecasting is limited (n≈5 years for pollution aggregates).",
     "L2: Chemical pollution records are real measurements extracted from official Kazhydromet monthly "
-    "environmental bulletins (2025, all 8 basins); a small number of ingredient names use nitrate-nitrogen "
-    "and were converted to nitrate-ion equivalents (×4.4268, molar mass ratio).",
+    "environmental bulletins (2025, all 8 basins); readings reported as nitrate-nitrogen were converted "
+    "to nitrate-ion equivalents (×4.4266, molar mass ratio NO3/N using IUPAC standard atomic weights).",
     "L3: Water-level observations (Kazhydromet) proxy basin hydrological state, not chemical concentration.",
     "L4: International reference data (Kaggle) is included for methodological comparison only, not for Kazakhstan regulatory decisions.",
     "L5: Tree-based and boosting models on n<10 observations demonstrate overfitting; Linear Regression is the primary interpretable model.",
-    "L6: WQI uses MPC-anchored sub-indices (Horton 1965; Brown et al. 1970) adapted to Kazakhstan SanPiN fishery MPC standards.",
+    "L6: WQI uses MPC-anchored sub-indices (Horton 1965; Brown et al. 1970); the 6 pollutant MPCs mix two "
+    "standards (see POLLUTANTS comment and README section 7) — Copper/Zinc/Phenols/Oil Products use the "
+    "stricter Russian fishery MPC, Sulfates and Nitrates use the Kazakhstan drinking-water MPC.",
+    "L7: Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not "
+    "anthropogenic pollution — see water_body_type ('lake' vs 'river') before reading a high Sulfates "
+    "ratio there as a pollution signal.",
 ]
 
 ML_DISCLAIMER = (
