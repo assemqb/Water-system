@@ -31,7 +31,26 @@ def test_build_context_not_empty():
     assert "forecast" in ctx
 
 
-def test_chat_wqi_question_en():
+def _force_fallback(monkeypatch):
+    """
+    Force the deterministic rule-based reply path.
+
+    chat() answers via a live Ollama LLM whenever one happens to be reachable
+    on the machine running pytest (analytics.chat_assistant._try_ollama calls
+    ollama_generate directly; it does not gate on ollama_available()). These
+    tests assert on literal substrings (region names) that only the
+    templated fallback reply guarantees — a live LLM paraphrases freely and
+    may omit them. CI never has Ollama installed, so it always exercised the
+    fallback path; locally, a running `ollama serve` made these tests flaky.
+    Patching ollama_generate (rather than ollama_available, which isn't
+    actually on this code path) reproduces the CI behavior deterministically.
+    """
+    monkeypatch.setattr("analytics.chat_assistant.ollama_generate", lambda *a, **k: (None, None))
+    monkeypatch.setattr("analytics.chat_assistant.ollama_available", lambda: False)
+
+
+def test_chat_wqi_question_en(monkeypatch):
+    _force_fallback(monkeypatch)
     res = chat("What is the mean WQI?", _sample_df(), lang="en")
     assert res["confidence"] in ("high", "low")
     assert res["source"] in ("ollama", "fallback")
@@ -41,7 +60,8 @@ def test_chat_wqi_question_en():
         assert FALLBACK_NOTICE in res["reply"]
 
 
-def test_chat_wqi_question_ru():
+def test_chat_wqi_question_ru(monkeypatch):
+    _force_fallback(monkeypatch)
     res = chat("Какой средний WQI?", _sample_df(), lang="ru")
     assert res["confidence"] in ("high", "low")
     assert "VKO" in res["reply"] or "Almaty" in res["reply"]
@@ -49,7 +69,8 @@ def test_chat_wqi_question_ru():
         assert FALLBACK_NOTICE in res["reply"]
 
 
-def test_chat_wqi_question_kk():
+def test_chat_wqi_question_kk(monkeypatch):
+    _force_fallback(monkeypatch)
     res = chat("Орташа WQI қандай?", _sample_df(), lang="kk")
     assert res["confidence"] in ("high", "low")
     assert "VKO" in res["reply"] or "Almaty" in res["reply"]
