@@ -17,11 +17,16 @@ export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
       <h2 className="nsp__title">{t('national.title')}</h2>
 
       <div className="nsp__hero-metric">
-        <span className="nsp__hero-label">{t('national.avgWqi')}</span>
+        <span className="nsp__hero-label">{t('national.medianWqi')}</span>
         <span className="nsp__hero-value">
-          <AnimatedNumber value={kpi.mean_wqi} decimals={1} />
+          <AnimatedNumber value={kpi.median_wqi} decimals={1} />
         </span>
         <span className="nsp__hero-unit">{t('map.legendTitle')}</span>
+        {kpi.mean_wqi != null && (
+          <span className="nsp__hero-secondary">
+            {t('national.meanLabel')}: <AnimatedNumber value={kpi.mean_wqi} decimals={1} />
+          </span>
+        )}
       </div>
 
       <ul className="nsp__facts">
@@ -43,6 +48,10 @@ export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
             <strong>{facts.dangerous_pollutant}</strong>
           </li>
         )}
+        <li className="nsp__fact">
+          <span>{t('national.overMpc')}</span>
+          <strong><AnimatedNumber value={kpi.over_mpc_share} decimals={1} />%</strong>
+        </li>
         <li className="nsp__fact">
           <span>{t('national.highRisk')}</span>
           <strong><AnimatedNumber value={kpi.high_risk_share} decimals={1} />%</strong>
@@ -66,8 +75,8 @@ export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
           <p className="nsp__lakes-note">{t('national.lakesNote')}</p>
           <ul className="nsp__facts">
             <li className="nsp__fact">
-              <span>{t('national.avgWqi')}</span>
-              <strong><AnimatedNumber value={kpiLakes.mean_wqi} decimals={1} /></strong>
+              <span>{t('national.medianWqi')}</span>
+              <strong><AnimatedNumber value={kpiLakes.median_wqi} decimals={1} /></strong>
             </li>
             <li className="nsp__fact">
               <span>{t('national.records')}</span>

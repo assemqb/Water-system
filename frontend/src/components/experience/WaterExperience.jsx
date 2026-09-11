@@ -168,7 +168,8 @@ export function WaterExperience({
           >
             {kpi && (
               <div className="journey-kpi-strip">
-                <div className="journey-kpi"><span>{t('national.avgWqi')}</span><strong>{kpi.mean_wqi}</strong></div>
+                <div className="journey-kpi"><span>{t('national.medianWqi')}</span><strong>{kpi.median_wqi}</strong></div>
+                <div className="journey-kpi"><span>{t('national.overMpc')}</span><strong>{kpi.over_mpc_share}%</strong></div>
                 <div className="journey-kpi"><span>{t('national.highRisk')}</span><strong>{kpi.high_risk_share}%</strong></div>
                 <div className="journey-kpi"><span>{t('national.records')}</span><strong>{kpi.records?.toLocaleString()}</strong></div>
               </div>

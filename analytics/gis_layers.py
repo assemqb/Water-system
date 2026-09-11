@@ -82,6 +82,8 @@ def station_stats(df: pd.DataFrame) -> list[dict[str, Any]]:
             "region": region,
             "lon": lon,
             "lat": lat,
+            "median_wqi": round(float(grp["WQI_Score"].median()), 2),
+            "over_mpc_pct": round(float((grp["Ratio"] > 1).mean() * 100), 1),
             "mean_wqi": round(float(grp["WQI_Score"].mean()), 2),
             "max_ratio": round(max_ratio, 2),
             "high_risk_pct": round(high_risk_pct, 1),
@@ -114,11 +116,15 @@ def basin_stats(df: pd.DataFrame) -> list[dict[str, Any]]:
         rows.append({
             "id": str(basin),
             "records": int(len(grp)),
+            # Primary: median WQI + share of measurements above MPC.
+            "median_wqi": round(float(grp["WQI_Score"].median()), 2),
+            "over_mpc_pct": round(float((grp["Ratio"] > 1).mean() * 100), 1),
+            # Secondary — mean, explicitly labeled wherever rendered.
             "mean_wqi": round(float(grp["WQI_Score"].mean()), 2),
             "max_ratio": round(float(grp["Ratio"].max()), 2),
             "high_risk_pct": round(float((grp["Ratio"] > 2).mean() * 100), 1),
             "top_pollutant": str(top_row["Pollutant"]) if top_row is not None else "—",
-            "top_region": str(grp.groupby("Region")["Ratio"].mean().idxmax()) if "Region" in grp.columns else "—",
+            "top_region": str(grp.groupby("Region")["Ratio"].median().idxmax()) if "Region" in grp.columns else "—",
             "trend_wqi_delta": trend,
             "stations": sorted(int(c) for c in grp["station_code"].dropna().unique()) if "station_code" in grp.columns else [],
         })

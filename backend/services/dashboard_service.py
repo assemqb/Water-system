@@ -34,6 +34,7 @@ from config.settings import (
     DATA_PATH,
     GEOJSON_PATH,
     MIN_ML_FORECAST_YEARS,
+    MIN_YOY_SAMPLES,
     MODEL_COLORS,
     REGION_NAME_MAP,
     TREE_MODEL_NAMES,
@@ -143,9 +144,25 @@ class DashboardService:
 
     def _kpi_for(self, df: pd.DataFrame) -> dict:
         if df.empty:
-            return {"records": 0, "mean_wqi": None, "mean_ratio": None, "high_risk_share": None}
+            return {
+                "records": 0,
+                "median_wqi": None,
+                "over_mpc_share": None,
+                "mean_wqi": None,
+                "mean_ratio": None,
+                "high_risk_share": None,
+            }
         return {
             "records": int(len(df)),
+            # Primary metrics: median WQI and the share of measurements above
+            # MPC (Ratio > 1). A few real extreme readings (mining-affected
+            # Ertis-basin rivers) drag the arithmetic mean into the
+            # thousands even when most measurements sit near the MPC line —
+            # median is the honest "typical" figure for this data.
+            "median_wqi": round(float(df["WQI_Score"].median()), 2),
+            "over_mpc_share": round(float((df["Ratio"] > 1).mean() * 100), 1),
+            # Secondary — mean is kept for reference/debugging, always
+            # rendered with an explicit "mean" label, never as the headline.
             "mean_wqi": round(float(df["WQI_Score"].mean()), 2),
             "mean_ratio": round(float(df["Ratio"].mean()), 2),
             "high_risk_share": round(float((df["Ratio"] > 2).mean() * 100), 1),
@@ -172,6 +189,10 @@ class DashboardService:
                 top_row = grp.loc[grp["Ratio"].idxmax()]
             rows.append({
                 "region": str(region),
+                # Primary: median WQI + share of measurements above MPC.
+                "median_wqi": round(float(grp["WQI_Score"].median()), 2),
+                "over_mpc_pct": round(float((grp["Ratio"] > 1).mean() * 100), 1),
+                # Secondary — mean, explicitly labeled wherever rendered.
                 "mean_wqi": round(float(grp["WQI_Score"].mean()), 2),
                 "high_risk_pct": round(float((grp["Ratio"] > 2).mean() * 100), 1),
                 "records": int(len(grp)),
@@ -281,7 +302,10 @@ class DashboardService:
         in BOTH of the two most recent years with chemical data (for the
         current dataset: Jun, Aug-Dec — the 2024 months with full 8-basin
         coverage, matched against the same months in 2025), so it is never
-        comparing e.g. a winter reading to a summer one.
+        comparing e.g. a winter reading to a summer one. A water-body/
+        pollutant row is only included if BOTH years have at least
+        MIN_YOY_SAMPLES individual measurements — a mean of 1-2 readings
+        isn't a reliable year to compare.
         """
         chem = df[df.get("data_source") == "observed_chemical"].copy() if "data_source" in df.columns else df.iloc[0:0]
         if chem.empty or "water_body" not in chem.columns:
@@ -309,7 +333,7 @@ class DashboardService:
                 continue
             g_a = grp[grp["Year"] == year_a]
             g_b = grp[grp["Year"] == year_b]
-            if g_a.empty or g_b.empty:
+            if len(g_a) < MIN_YOY_SAMPLES or len(g_b) < MIN_YOY_SAMPLES:
                 continue
             ratio_a, ratio_b = float(g_a["Ratio"].mean()), float(g_b["Ratio"].mean())
             rows.append({

@@ -240,6 +240,11 @@ MIN_SAMPLES_DEEP_LEARNING = 50
 # dots, not a forecast. dashboard_service.ml_forecast() returns {"ok": False}
 # under this threshold instead of a misleading result.
 MIN_ML_FORECAST_YEARS = 4
+# dashboard_service.chemical_yoy_comparison() drops any water-body/pollutant
+# row where either year has fewer than this many individual measurements —
+# a "mean" of 1-2 readings is not a reliable enough estimate to compare
+# year over year.
+MIN_YOY_SAMPLES = 3
 
 # ── Dashboard copy ────────────────────────────────────────────────────────────
 DATASET_BANNER = (

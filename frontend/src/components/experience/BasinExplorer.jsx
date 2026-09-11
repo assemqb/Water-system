@@ -17,7 +17,7 @@ export function BasinExplorer({ basinStats = [], activeBasin, onSelect }) {
             onClick={() => onSelect(b.id)}
           >
             <span className="basin-explorer__name">{b.id.replace(/-/g, ' ')}</span>
-            <span className="basin-explorer__wqi">WQI {b.mean_wqi}</span>
+            <span className="basin-explorer__wqi">WQI {b.median_wqi}</span>
           </button>
         ))}
       </div>

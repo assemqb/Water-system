@@ -43,17 +43,22 @@ def generate_insights(df: pd.DataFrame, lang: str = "en") -> list[str]:
     insights: list[str] = []
     n = len(base)
 
+    # Ranked by MEDIAN, matching the KPI/region-stats/facts ranking
+    # (dashboard_service, public_facts) — a handful of real extreme
+    # readings can drag a mean far above what any "typical" reading looks
+    # like; using mean here and median there could pick a different
+    # "worst region" than the KPI panel shows for the same filtered view.
     if "Region" in base.columns and "Ratio" in base.columns:
-        regional = base.groupby("Region")["Ratio"].mean().sort_values(ascending=False)
+        regional = base.groupby("Region")["Ratio"].median().sort_values(ascending=False)
         if not regional.empty:
             top = regional.index[0]
             ratio = regional.iloc[0]
             insights.append(
                 _pick(
                     lang,
-                    f"**{top}** shows the highest mean pollution ratio ({ratio:.2f}× MPC) in the current view (n={n:,}).",
-                    f"**{top}** — наибольшее среднее отношение к ПДК ({ratio:.2f}×) в текущей выборке (n={n:,}).",
-                    f"**{top}** — ағымдағы көруде орташа ластану ({ratio:.2f}× ШРК) ең жоғары (n={n:,}).",
+                    f"**{top}** shows the highest median pollution ratio ({ratio:.2f}× MPC) in the current view (n={n:,}).",
+                    f"**{top}** — наибольшее медианное отношение к ПДК ({ratio:.2f}×) в текущей выборке (n={n:,}).",
+                    f"**{top}** — ағымдағы көруде медиана ластану ({ratio:.2f}× ШРК) ең жоғары (n={n:,}).",
                 )
             )
             clean = regional.index[-1]
@@ -61,28 +66,28 @@ def generate_insights(df: pd.DataFrame, lang: str = "en") -> list[str]:
             insights.append(
                 _pick(
                     lang,
-                    f"**{clean}** is the cleanest region by mean ratio ({clean_r:.2f}× MPC).",
-                    f"**{clean}** — самый чистый регион по среднему отношению ({clean_r:.2f}× ПДК).",
-                    f"**{clean}** — орташа қатынас бойынша ең таза аудан ({clean_r:.2f}× ШРК).",
+                    f"**{clean}** is the cleanest region by median ratio ({clean_r:.2f}× MPC).",
+                    f"**{clean}** — самый чистый регион по медианному отношению ({clean_r:.2f}× ПДК).",
+                    f"**{clean}** — медиана қатынасы бойынша ең таза аудан ({clean_r:.2f}× ШРК).",
                 )
             )
 
     if "Pollutant" in base.columns and "Ratio" in base.columns:
-        by_poll = base.groupby("Pollutant")["Ratio"].mean().sort_values(ascending=False)
+        by_poll = base.groupby("Pollutant")["Ratio"].median().sort_values(ascending=False)
         if not by_poll.empty:
             worst = by_poll.index[0]
             wr = by_poll.iloc[0]
             insights.append(
                 _pick(
                     lang,
-                    f"**{worst}** is the most critical pollutant (mean {wr:.2f}× MPC).",
-                    f"**{worst}** — самый проблемный загрязнитель (ср. {wr:.2f}× ПДК).",
-                    f"**{worst}** — ең проблемалы ластаушы (орт. {wr:.2f}× ШРК).",
+                    f"**{worst}** is the most critical pollutant (median {wr:.2f}× MPC).",
+                    f"**{worst}** — самый проблемный загрязнитель (медиана {wr:.2f}× ПДК).",
+                    f"**{worst}** — ең проблемалы ластаушы (медиана {wr:.2f}× ШРК).",
                 )
             )
 
     if "Year" in base.columns and "WQI_Score" in base.columns:
-        yearly = base.groupby("Year")["WQI_Score"].mean().dropna().sort_index()
+        yearly = base.groupby("Year")["WQI_Score"].median().dropna().sort_index()
         if len(yearly) >= 2:
             delta = yearly.iloc[-1] - yearly.iloc[0]
             pct = (delta / yearly.iloc[0] * 100) if yearly.iloc[0] else 0

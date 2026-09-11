@@ -502,6 +502,31 @@ Documented in `config/settings.py` (L1–L7):
 6. **L6:** WQI uses MPC-anchored sub-indices; the 6 MPCs mix two different official standards — see section 7 for the full sourced table (this is disclosure, not a data error)
 7. **L7:** Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not pollution — check `water_body_type` before reading a high Sulfates ratio there as a pollution signal
 
+### Rows excluded for the repeated-prefix table-corruption fix (L2)
+
+One source table layout — a repeated classifier prefix per column instead of a suffix per name (e.g. "Көл Копа Көл Зеренді Көл Бурабай ...") — was found, on inspection of Esil_2024-06.pdf, to also have a genuine row-level shift in the source PDF (a blank pH row pushed hardness and mineralization to swap places; the row labeled "Мыс"/Copper showed BOD5-scale magnitudes). `data/kazhydromet_bulletin_etl.py` now skips that layout's values entirely rather than keep a wrong concentration. It affects only the Esil (Akmola) region's bulletins — every other basin is unchanged:
+
+| Basin | Year | Before | After | Excluded |
+|---|---|---:|---:|---:|
+| Aralo-Syrdarya | 2024 | 17 | 17 | 0 |
+| Aralo-Syrdarya | 2025 | 35 | 35 | 0 |
+| Balkash-Alakol | 2024 | 55 | 55 | 0 |
+| Balkash-Alakol | 2025 | 187 | 187 | 0 |
+| Ertis | 2024 | 26 | 26 | 0 |
+| Ertis | 2025 | 163 | 163 | 0 |
+| **Esil** | **2024** | **139** | **0** | **139** |
+| **Esil** | **2025** | **247** | **30** | **217** |
+| Nura-Sarysu | 2024 | 93 | 93 | 0 |
+| Nura-Sarysu | 2025 | 176 | 176 | 0 |
+| Shu-Talas | 2024 | 19 | 19 | 0 |
+| Shu-Talas | 2025 | 58 | 58 | 0 |
+| Tobyl-Torgay | 2025 | 35 | 35 | 0 |
+| Zhaiyk-Kaspian | 2024 | 26 | 26 | 0 |
+| Zhaiyk-Kaspian | 2025 | 82 | 82 | 0 |
+| **Total** | | **1,358** | **1,002** | **356** |
+
+(Tobyl-Torgay/2024 and Esil/2024 rows below the 2024 full-coverage-month set, or with zero matches for the 6 tracked pollutants that month, are omitted from the table rather than shown as 0/0.) Esil retains 30 rows in 2025 from tables that were NOT the repeated-prefix layout (individual river readings); the 2024 Esil bulletins for the covered months happened to report lakes exclusively via that layout, so its 2024 chemical count is zero.
+
 ---
 
 ## 22. Authors

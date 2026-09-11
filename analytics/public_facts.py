@@ -13,37 +13,48 @@ def _facts_for(base: pd.DataFrame) -> dict:
     if base.empty:
         return facts
 
+    # Primary ranking is by MEDIAN WQI, not mean: a handful of real extreme
+    # readings (e.g. mining-affected Ertis-basin rivers) can drag a region's
+    # mean into the thousands while every other reading sits near the MPC
+    # line — the median is what "typical" means for this heavy-tailed data.
+    # Mean is kept alongside as an explicitly-labeled secondary figure.
     if "Region" in base.columns and "WQI_Score" in base.columns:
-        by_wqi = base.groupby("Region")["WQI_Score"].mean().sort_values()
+        by_wqi = base.groupby("Region")["WQI_Score"].median().sort_values()
+        by_wqi_mean = base.groupby("Region")["WQI_Score"].mean()
         if not by_wqi.empty:
             facts["cleanest_region"] = str(by_wqi.index[0])
             facts["cleanest_wqi"] = round(float(by_wqi.iloc[0]), 1)
+            facts["cleanest_wqi_mean"] = round(float(by_wqi_mean[by_wqi.index[0]]), 1)
             facts["most_polluted_region"] = str(by_wqi.index[-1])
             facts["most_polluted_wqi"] = round(float(by_wqi.iloc[-1]), 1)
+            facts["most_polluted_wqi_mean"] = round(float(by_wqi_mean[by_wqi.index[-1]]), 1)
 
     if "Pollutant" in base.columns and "Ratio" in base.columns:
-        by_p = base.groupby("Pollutant")["Ratio"].mean().sort_values(ascending=False)
+        by_p = base.groupby("Pollutant")["Ratio"].median().sort_values(ascending=False)
         if not by_p.empty:
             facts["dangerous_pollutant"] = str(by_p.index[0])
             facts["dangerous_ratio"] = round(float(by_p.iloc[0]), 2)
 
     if "Ratio" in base.columns:
         facts["within_limits_pct"] = round(float((base["Ratio"] < 1).mean() * 100), 1)
+        facts["over_mpc_pct"] = round(float((base["Ratio"] > 1).mean() * 100), 1)
         facts["high_risk_count"] = int((base["Ratio"] > 2).sum())
 
     if "Year" in base.columns and "WQI_Score" in base.columns:
-        yearly = base.groupby("Year")["WQI_Score"].mean().dropna().sort_index()
+        yearly = base.groupby("Year")["WQI_Score"].median().dropna().sort_index()
         if len(yearly) >= 2:
             facts["trend_delta"] = round(float(yearly.iloc[-1] - yearly.iloc[0]), 2)
             facts["trend_year_from"] = int(yearly.index[0])
             facts["trend_year_to"] = int(yearly.index[-1])
 
-    if "Region" in base.columns and "Ratio" in base.columns:
-        regional = base.groupby("Region")["Ratio"].mean()
+    if "Region" in base.columns and "WQI_Score" in base.columns:
+        by_region_median = base.groupby("Region")["WQI_Score"].median()
+        by_region_mean = base.groupby("Region")["WQI_Score"].mean()
         facts["regional_wqi"] = {
-            str(k): round(float(base[base["Region"] == k]["WQI_Score"].mean()), 1)
-            for k in regional.index
-            if pd.notna(base[base["Region"] == k]["WQI_Score"].mean())
+            str(k): round(float(v), 1) for k, v in by_region_median.items() if pd.notna(v)
+        }
+        facts["regional_wqi_mean"] = {
+            str(k): round(float(v), 1) for k, v in by_region_mean.items() if pd.notna(v)
         }
 
     return facts
