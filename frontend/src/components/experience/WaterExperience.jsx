@@ -56,6 +56,7 @@ export function WaterExperience({
 }) {
   const { t } = useLanguage()
   const kpi = summary?.kpi
+  const kpiLakes = summary?.kpi_lakes
   const facts = summary?.public_facts || {}
   const insights = Array.isArray(summary?.insights) ? summary.insights.filter(Boolean) : []
   const regions = safeRegions(options?.regions)
@@ -135,7 +136,7 @@ export function WaterExperience({
         onAnalystOpen={onAnalystOpen}
       >
         {!mapSel.geoSelection && (
-          <NationalStatusPanel kpi={kpi} facts={facts} nationalStory={stories?.national_status} />
+          <NationalStatusPanel kpi={kpi} kpiLakes={kpiLakes} facts={facts} nationalStory={stories?.national_status} />
         )}
 
         {displayRegion && !mapSel.geoSelection && (

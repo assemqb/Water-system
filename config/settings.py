@@ -235,6 +235,11 @@ TREE_MODEL_NAMES = {
 
 OVERFITTING_R2_THRESHOLD = 0.95
 MIN_SAMPLES_DEEP_LEARNING = 50
+# Below this many yearly points, TimeSeriesSplit CV is not meaningful (needs
+# n>=3 to fold at all) and a 2-point "trend" is just a line through two
+# dots, not a forecast. dashboard_service.ml_forecast() returns {"ok": False}
+# under this threshold instead of a misleading result.
+MIN_ML_FORECAST_YEARS = 4
 
 # ── Dashboard copy ────────────────────────────────────────────────────────────
 DATASET_BANNER = (
@@ -243,7 +248,9 @@ DATASET_BANNER = (
 )
 
 LIMITATIONS = [
-    "L1: Sample size for annual ML forecasting is limited (n≈5 years for pollution aggregates).",
+    "L1: Sample size for annual ML forecasting is limited (n≈5 years for the water-level series); "
+    "chemical-pollutant forecasting is unavailable below MIN_ML_FORECAST_YEARS=4 (currently n=2) — "
+    "a same-month year-over-year comparison is shown instead.",
     "L2: Chemical pollution records are real measurements extracted from official Kazhydromet monthly "
     "environmental bulletins (2025, all 8 basins); readings reported as nitrate-nitrogen were converted "
     "to nitrate-ion equivalents (×4.4266, molar mass ratio NO3/N using IUPAC standard atomic weights).",

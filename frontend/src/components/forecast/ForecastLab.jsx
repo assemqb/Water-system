@@ -120,8 +120,42 @@ export function ForecastLab({ filters, meta, plotLayout, inline = false }) {
               <p className="map-hint" style={{ marginTop: '1rem' }}>{meta.why_not_deep_learning}</p>
             )}
           </>
+        ) : ml?.chemical_yoy?.ok ? (
+          <>
+            <p className="chart-narrative">
+              {t('ml.yoyExplain', { yearA: ml.chemical_yoy.year_a, yearB: ml.chemical_yoy.year_b })}
+            </p>
+            <div className="forecast-table-wrap">
+              <table className="forecast-table">
+                <thead>
+                  <tr>
+                    <th>{t('ml.yoyWaterBody')}</th>
+                    <th>{t('ml.yoyType')}</th>
+                    <th>{t('ml.yoyPollutant')}</th>
+                    <th>{t('ml.yoyRatio', { year: ml.chemical_yoy.year_a })}</th>
+                    <th>{t('ml.yoyRatio', { year: ml.chemical_yoy.year_b })}</th>
+                    <th>{t('ml.yoyDelta')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ml.chemical_yoy.rows.slice(0, 25).map((row, idx) => (
+                    <tr key={`${row.water_body}-${row.pollutant}-${idx}`}>
+                      <td>{row.water_body}</td>
+                      <td>{row.water_body_type === 'lake' ? t('waterBodyType.lake') : t('waterBodyType.river')}</td>
+                      <td>{row.pollutant}</td>
+                      <td>{row.mean_ratio_a}</td>
+                      <td>{row.mean_ratio_b}</td>
+                      <td style={{ color: row.ratio_delta > 0 ? '#fca5a5' : '#6ee7b7' }}>
+                        {row.ratio_delta > 0 ? '+' : ''}{row.ratio_delta}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
-          <p className="empty-state">{t('ml.unavailableDesc')}</p>
+          <p className="empty-state">{ml?.message || t('ml.unavailableDesc')}</p>
         )}
       </div>
   )

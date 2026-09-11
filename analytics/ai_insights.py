@@ -5,14 +5,16 @@ from __future__ import annotations
 import pandas as pd
 
 from analytics.i18n_content import INSIGHT_DISCLAIMERS, norm_lang
+from analytics.water_body import exclude_lakes
 
 NON_CHEMICAL = {"Water_Level_cm", "Mixed_Chemicals"}
 
 
 def _chem(df: pd.DataFrame) -> pd.DataFrame:
+    """Chemical-pollutant rows, rivers only (see analytics.water_body)."""
     if "Pollutant" not in df.columns:
         return df
-    return df[~df["Pollutant"].isin(NON_CHEMICAL)]
+    return exclude_lakes(df[~df["Pollutant"].isin(NON_CHEMICAL)])
 
 
 def _pick(lang: str, en: str, ru: str, kk: str) -> str:

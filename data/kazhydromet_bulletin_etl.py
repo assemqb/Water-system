@@ -155,9 +155,19 @@ NAME_FIXUPS = {
 }
 
 
+# Sea names that appear as bare proper nouns in ingredient-table column
+# headers (e.g. "Солтүстік Каспий" = "Northern Caspian") without a generic
+# "теңізі" suffix attached — classified as lake/still-water like any sea.
+SEA_NAMES = ("каспий", "арал")
+
+
 def classify_type(name: str) -> str:
     low = name.lower()
-    return "lake" if any(low.endswith(suf) for suf in LAKE_SUFFIXES) else "river"
+    if any(low.endswith(suf) for suf in LAKE_SUFFIXES):
+        return "lake"
+    if any(sea in low.split() for sea in SEA_NAMES):
+        return "lake"
+    return "river"
 
 
 def clean_water_body_name(name: str) -> str:
@@ -340,10 +350,19 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
 
         if re.search(r"Ингредиент", line):
             col_starts, col_names, data_start = _parse_ingredient_header(lines, i)
-            if col_names:
-                in_ingredient_table = True
-                i = data_start
-                continue
+            # Always treat this as an ingredient-table region and jump past its
+            # header, whether or not column names could be attributed. The
+            # bailout in _parse_ingredient_header (repeated-prefix layout, e.g.
+            # "Көл Копа  Көл Зеренді  Көл Бурабай ...") returns col_names=[] —
+            # falling through to the stateful current_wb/nearest_wb scanner
+            # here would be *worse* than no attribution: that scanner isn't
+            # column-aware, so it would confidently glue one name (whichever
+            # LEADING_WB_RE happens to match nearby) onto every water body's
+            # values in this multi-column table.
+            in_ingredient_table = True
+            current_wb, current_wb_type = None, None
+            i = data_start
+            continue
 
         wb_match = LEADING_WB_RE.match(line)
         if wb_match and not in_ingredient_table:
@@ -351,7 +370,15 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
             if is_plausible_name(candidate):
                 current_wb, current_wb_type = candidate, classify_type(candidate)
 
-        m = LINE_RE.match(line)
+        m = LINE_RE.match(line) if not (in_ingredient_table and not col_starts) else None
+        # `in_ingredient_table and not col_starts` means the repeated-prefix
+        # bailout fired for this table. Investigating one such table
+        # (Esil_2024-06.pdf, "Мамыр 2024" sub-table) found it also had a
+        # genuine ROW-level shift — a blank pH row pushed every later labeled
+        # row (hardness/mineralization swapped, Copper-labeled row showing
+        # BOD5-scale magnitudes) up by one — not just an unattributable
+        # column layout. Skip the table's VALUES entirely here, not only
+        # water_body: a wrong concentration is worse than a missing one.
         if m:
             term = _term_for(m.group("prefix"))
             if term:

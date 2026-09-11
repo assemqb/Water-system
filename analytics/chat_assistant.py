@@ -19,6 +19,7 @@ from analytics.ai_insights import generate_insights
 from analytics.i18n_content import INSIGHT_DISCLAIMERS
 from analytics.chat_nlu import extract_regions, extract_year
 from analytics.ollama_client import generate as ollama_generate, is_available as ollama_available
+from analytics.water_body import exclude_lakes
 
 NON_CHEMICAL_POLLUTANTS = frozenset({"Water_Level_cm", "Mixed_Chemicals"})
 
@@ -80,9 +81,12 @@ def _suggestions(lang: str) -> list[str]:
 
 
 def _chemical_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Chemical-pollutant rows, rivers only (see analytics.water_body / L7) —
+    keeps the analyst's narrative from citing a naturally saline lake's
+    Sulfates ratio as if it were pollution."""
     if "Pollutant" not in df.columns:
         return df
-    return df[~df["Pollutant"].isin(NON_CHEMICAL_POLLUTANTS)]
+    return exclude_lakes(df[~df["Pollutant"].isin(NON_CHEMICAL_POLLUTANTS)])
 
 
 def _stats_block(sub: pd.DataFrame) -> dict[str, Any]:

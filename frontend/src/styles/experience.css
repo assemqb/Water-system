@@ -569,6 +569,27 @@ body {
 
 .nsp__story strong { color: #bae6fd; }
 
+.nsp__lakes {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.nsp__lakes-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #7dd3fc;
+  margin: 0 0 0.35rem;
+}
+
+.nsp__lakes-note {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #94a3b8;
+  margin: 0 0 0.6rem;
+}
+
 .region-probe {
   position: absolute;
   bottom: 4.5rem;

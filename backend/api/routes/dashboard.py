@@ -9,7 +9,7 @@ from backend.services.dashboard_service import dashboard_service
 
 from analytics.chart_narratives import chart_narratives
 from analytics.gis_layers import gis_bundle
-from analytics.public_facts import public_facts
+from analytics.public_facts import lake_facts, public_facts
 from analytics.story_engine import generate_stories
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -70,13 +70,16 @@ def dashboard_summary(body: FilterRequest):
     lang = body.lang or "en"
     return {
         "kpi": dashboard_service.kpi(filtered),
+        "kpi_lakes": dashboard_service.kpi_lakes(filtered),
         "data_quality": dashboard_service.data_quality(filtered),
         "risk_alerts": dashboard_service.risk_alerts(filtered),
         "insights": dashboard_service.insights(filtered, lang=lang),
         "public_facts": public_facts(filtered),
+        "lake_facts": lake_facts(filtered),
         "chart_narratives": chart_narratives(filtered, lang=lang),
         "stories": generate_stories(filtered, lang=lang),
         "region_stats": dashboard_service.region_stats(filtered),
+        "region_stats_lakes": dashboard_service.region_stats_lakes(filtered),
         "record_count": len(filtered),
         "gis": gis_bundle(filtered),
     }
@@ -91,7 +94,13 @@ def dashboard_charts(body: FilterRequest):
 @router.post("/ml")
 def dashboard_ml(body: MLRequest):
     filtered = _filtered(body)
-    return dashboard_service.ml_forecast(filtered, target=body.target)
+    result = dashboard_service.ml_forecast(filtered, target=body.target)
+    if not result.get("ok"):
+        # Too few yearly points for a forecast (see MIN_ML_FORECAST_YEARS) —
+        # offer a same-month year-over-year comparison of the real chemical
+        # data instead of nothing, when there's chemical data to compare.
+        result["chemical_yoy"] = dashboard_service.chemical_yoy_comparison(filtered)
+    return result
 
 
 @router.post("/compare")

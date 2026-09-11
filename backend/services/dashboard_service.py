@@ -17,6 +17,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from analytics.ai_insights import generate_insights
+from analytics.water_body import exclude_lakes, only_lakes
 from analytics.gis_layers import basin_stats, pollution_hotspots
 from analytics.chart_narratives import chart_narratives
 from analytics.chat_assistant import chat as chat_assistant
@@ -32,6 +33,7 @@ from config.logging_config import get_logger
 from config.settings import (
     DATA_PATH,
     GEOJSON_PATH,
+    MIN_ML_FORECAST_YEARS,
     MODEL_COLORS,
     REGION_NAME_MAP,
     TREE_MODEL_NAMES,
@@ -139,7 +141,9 @@ class DashboardService:
     def insights(self, df: pd.DataFrame, lang: str = "en") -> list[str]:
         return generate_insights(df, lang=lang)
 
-    def kpi(self, df: pd.DataFrame) -> dict:
+    def _kpi_for(self, df: pd.DataFrame) -> dict:
+        if df.empty:
+            return {"records": 0, "mean_wqi": None, "mean_ratio": None, "high_risk_share": None}
         return {
             "records": int(len(df)),
             "mean_wqi": round(float(df["WQI_Score"].mean()), 2),
@@ -147,11 +151,20 @@ class DashboardService:
             "high_risk_share": round(float((df["Ratio"] > 2).mean() * 100), 1),
         }
 
+    def kpi(self, df: pd.DataFrame) -> dict:
+        """Default KPI view: rivers (+ everything without a water_body_type,
+        i.e. water-level/reference rows) — excludes lakes (see L7 / analytics.water_body)."""
+        return self._kpi_for(exclude_lakes(df))
+
+    def kpi_lakes(self, df: pd.DataFrame) -> Optional[dict]:
+        """Lake-only KPI, shown separately rather than blended into `kpi`."""
+        lakes = only_lakes(df)
+        return self._kpi_for(lakes) if not lakes.empty else None
+
     def data_quality(self, df: pd.DataFrame) -> dict:
         return data_quality_summary(df)
 
-    def region_stats(self, df: pd.DataFrame) -> list[dict]:
-        """Per-region metrics for map hover and tooltips."""
+    def _region_stats_for(self, df: pd.DataFrame) -> list[dict]:
         rows: list[dict] = []
         for region, grp in df.groupby("Region"):
             top_row = None
@@ -167,6 +180,14 @@ class DashboardService:
                 "basin": str(grp["Basin"].mode().iloc[0]) if "Basin" in grp.columns and len(grp["Basin"].dropna()) else None,
             })
         return rows
+
+    def region_stats(self, df: pd.DataFrame) -> list[dict]:
+        """Per-region metrics for map hover/tooltips — rivers by default (see `kpi`)."""
+        return self._region_stats_for(exclude_lakes(df))
+
+    def region_stats_lakes(self, df: pd.DataFrame) -> list[dict]:
+        """Same per-region metrics, lake water bodies only."""
+        return self._region_stats_for(only_lakes(df))
 
     def risk_alerts(self, df: pd.DataFrame) -> dict:
         high = df[df["Ratio"] > 2]
@@ -251,10 +272,74 @@ class DashboardService:
             "b": {"wqi": round(b_wqi, 2), "ratio": round(b_ratio, 2), "high_risk_pct": round(b_high, 1)},
         }
 
+    def chemical_yoy_comparison(self, df: pd.DataFrame) -> dict:
+        """
+        Same-month year-over-year comparison for real chemical data, per
+        water body — used in place of ML forecasting for pollutant-filtered
+        views, where there are too few yearly points (< MIN_ML_FORECAST_YEARS)
+        for a trend to mean anything. Compares only calendar months present
+        in BOTH of the two most recent years with chemical data (for the
+        current dataset: Jun, Aug-Dec — the 2024 months with full 8-basin
+        coverage, matched against the same months in 2025), so it is never
+        comparing e.g. a winter reading to a summer one.
+        """
+        chem = df[df.get("data_source") == "observed_chemical"].copy() if "data_source" in df.columns else df.iloc[0:0]
+        if chem.empty or "water_body" not in chem.columns:
+            return {"ok": False, "message": "No chemical data with water-body attribution available."}
+
+        chem["Date"] = pd.to_datetime(chem["Date"], errors="coerce")
+        chem["Month"] = chem["Date"].dt.month
+        years = sorted(y for y in chem["Year"].dropna().unique())
+        if len(years) < 2:
+            return {"ok": False, "message": "Need chemical data from at least two years to compare."}
+        year_a, year_b = int(years[-2]), int(years[-1])
+
+        months_a = set(chem.loc[chem["Year"] == year_a, "Month"].dropna())
+        months_b = set(chem.loc[chem["Year"] == year_b, "Month"].dropna())
+        common_months = sorted(int(m) for m in (months_a & months_b))
+        if not common_months:
+            return {"ok": False, "message": f"No overlapping months between {year_a} and {year_b}."}
+
+        scoped = chem[chem["Month"].isin(common_months) & chem["Year"].isin([year_a, year_b])]
+        rows: list[dict] = []
+        group_cols = [c for c in ("water_body", "Basin", "Pollutant") if c in scoped.columns]
+        for keys, grp in scoped.groupby(group_cols):
+            water_body, basin, pollutant = keys if len(group_cols) == 3 else (keys, None, None)
+            if not water_body:
+                continue
+            g_a = grp[grp["Year"] == year_a]
+            g_b = grp[grp["Year"] == year_b]
+            if g_a.empty or g_b.empty:
+                continue
+            ratio_a, ratio_b = float(g_a["Ratio"].mean()), float(g_b["Ratio"].mean())
+            rows.append({
+                "water_body": str(water_body),
+                "water_body_type": str(grp["water_body_type"].iloc[0]) if "water_body_type" in grp.columns else None,
+                "basin": str(basin) if basin is not None else None,
+                "pollutant": str(pollutant),
+                "mean_ratio_a": round(ratio_a, 3),
+                "mean_ratio_b": round(ratio_b, 3),
+                "ratio_delta": round(ratio_b - ratio_a, 3),
+                "n_a": int(len(g_a)),
+                "n_b": int(len(g_b)),
+            })
+        rows.sort(key=lambda r: abs(r["ratio_delta"]), reverse=True)
+        return {
+            "ok": True,
+            "year_a": year_a,
+            "year_b": year_b,
+            "months": common_months,
+            "rows": rows,
+        }
+
     def ml_forecast(self, df: pd.DataFrame, target: str = "WQI_Score") -> dict:
         pred_data = prepare_yearly_series(df, target)
-        if len(pred_data) < 2:
-            return {"ok": False, "message": "Need at least 2 yearly points for ML."}
+        if len(pred_data) < MIN_ML_FORECAST_YEARS:
+            return {
+                "ok": False,
+                "message": f"Need at least {MIN_ML_FORECAST_YEARS} yearly points for ML "
+                f"(cross-validation needs n>=3 folds; a 2-point line isn't a forecast).",
+            }
         years = pred_data["Year"].astype(int).tolist()
         y = pred_data[target].tolist()
         forecast_year = int(max(years)) + 1

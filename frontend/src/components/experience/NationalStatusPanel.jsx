@@ -7,7 +7,7 @@ function renderMd(text) {
   return String(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
 }
 
-export function NationalStatusPanel({ kpi, facts, nationalStory }) {
+export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
   const { t } = useLanguage()
   if (!kpi) return null
 
@@ -58,6 +58,23 @@ export function NationalStatusPanel({ kpi, facts, nationalStory }) {
           className="nsp__story"
           dangerouslySetInnerHTML={{ __html: renderMd(nationalStory) }}
         />
+      )}
+
+      {kpiLakes && kpiLakes.records > 0 && (
+        <div className="nsp__lakes" role="note">
+          <p className="nsp__lakes-title">{t('national.lakesTitle')}</p>
+          <p className="nsp__lakes-note">{t('national.lakesNote')}</p>
+          <ul className="nsp__facts">
+            <li className="nsp__fact">
+              <span>{t('national.avgWqi')}</span>
+              <strong><AnimatedNumber value={kpiLakes.mean_wqi} decimals={1} /></strong>
+            </li>
+            <li className="nsp__fact">
+              <span>{t('national.records')}</span>
+              <strong><AnimatedNumber value={kpiLakes.records} decimals={0} /></strong>
+            </li>
+          </ul>
+        </div>
       )}
     </aside>
   )
