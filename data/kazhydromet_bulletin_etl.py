@@ -97,8 +97,11 @@ TERMS: dict[str, tuple[str, float]] = {
     "нитрат-ионы": ("Nitrates", 1.0),
     "нитраты": ("Nitrates", 1.0),
     "нитратты азот": ("Nitrates", NITRATE_N_TO_ION),
+    "азот нитратный": ("Nitrates", NITRATE_N_TO_ION),
     "мыс": ("Copper", 1.0),
     "еріген мыс": ("Copper", 1.0),
+    "медь": ("Copper", 1.0),
+    "растворенная медь": ("Copper", 1.0),
     "сульфаттар": ("Sulfates", 1.0),
     "сульфаты": ("Sulfates", 1.0),
     "мырыш": ("Zinc", 1.0),
@@ -113,9 +116,15 @@ TERMS: dict[str, tuple[str, float]] = {
 }
 TERM_KEYS = sorted(TERMS.keys(), key=len, reverse=True)
 
-# Generous plausibility ceilings (mg/dm3) covering documented extreme cases
-# (Nura-Sarysu mining pollution, Tengiz/Aral hypersalinity) while rejecting
-# PDF text-layer column-misalignment artifacts.
+# Generous plausibility ceilings (mg/dm3), covering documented extreme cases
+# (Nura-Sarysu mining pollution, Tengiz/Aral hypersalinity, and severe
+# recurring Cu/Zn contamination in specific Ertis-basin rivers — Kishi
+# Karakozha alone has been seen at 22.7, 9.04, and 32.9 mg/dm3 Copper across
+# different months). A value over this ceiling is flagged via
+# exceeds_plausible=True rather than dropped: manual review of every case
+# found in this dataset (n=1: Ertis_2024-09, Copper 32.9 mg/dm3, Kishi
+# Karakozha) confirmed it as a real reading, not a column-misalignment
+# artifact — dropping would have discarded genuine data.
 PLAUSIBLE_MAX = {
     "Nitrates": 60.0,
     "Copper": 25.0,
@@ -508,8 +517,12 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                         continue
                     below_detection = val == 0
                     concentration = round(val * factor, 6)
-                    if not below_detection and concentration > PLAUSIBLE_MAX[pollutant]:
-                        continue
+                    # A real, recurring extreme reading (documented mining
+                    # contamination in specific Ertis-basin rivers) is worth
+                    # more than a silently-dropped row — flag rather than
+                    # drop, so an unusually large value stays visible and
+                    # auditable instead of vanishing.
+                    exceeds_plausible = not below_detection and concentration > PLAUSIBLE_MAX[pollutant]
 
                     if in_ingredient_table and col_starts:
                         abs_pos = rest_offset + nm.start()
@@ -528,6 +541,7 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                             "Concentration": concentration,
                             "MPC": POLLUTANTS[pollutant].mpc,
                             "below_detection": below_detection,
+                            "exceeds_plausible": exceeds_plausible,
                             "water_body": wb or "",
                             "water_body_type": wbt or "",
                             "table_type": "full_panel" if in_ingredient_table else "worst_parameter",
@@ -564,8 +578,8 @@ def write_csv(rows: list[dict], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         "ID", "Date", "Basin", "Region", "Pollutant", "Concentration", "MPC",
-        "below_detection", "water_body", "water_body_type", "table_type",
-        "station", "source_bulletin",
+        "below_detection", "exceeds_plausible", "water_body", "water_body_type",
+        "table_type", "station", "source_bulletin",
     ]
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)

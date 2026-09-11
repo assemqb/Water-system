@@ -111,6 +111,30 @@ def test_ambiguous_multi_parameter_cell_is_skipped(tmp_path):
     assert rows == []
 
 
+def test_russian_med_recognized_as_copper(tmp_path):
+    """Ertis_2025-06.pdf/2025-08.pdf: Еміл өзені reports Copper via the
+    Russian "медь" spelling instead of Kazakh "мыс" — was not extracted."""
+    body = (
+        "   Еміл өзені                        (жоғары       медь        мг/дм3   0,0012\n"
+        "                                   ластанған)\n"
+    )
+    path = _write_bulletin(tmp_path, "Ertis_2025-06", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    assert len(rows) == 1
+    assert rows[0]["water_body"] == "Еміл өзені"
+    assert rows[0]["Concentration"] == 0.0012
+
+
+def test_russian_reversed_nitrate_nitrogen_recognized(tmp_path):
+    """"Азот нитратный" (Russian, reversed word order vs the Kazakh-loan
+    "нитратты азот") is nitrate-nitrogen too — same NO3-N -> NO3- factor."""
+    body = "Азот нитратный     мг/дм3      0,1\n"
+    path = _write_bulletin(tmp_path, "Ertis_2025-06", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Nitrates")
+    assert len(rows) == 1
+    assert rows[0]["Concentration"] == round(0.1 * 4.4266, 6)
+
+
 def test_below_detection_flag_kept_not_dropped(tmp_path):
     body = "Сульфаттар      мг/дм3     0\n"
     path = _write_bulletin(tmp_path, "Ertis_2025-06", body)
@@ -118,6 +142,20 @@ def test_below_detection_flag_kept_not_dropped(tmp_path):
     assert len(rows) == 1
     assert rows[0]["Concentration"] == 0.0
     assert rows[0]["below_detection"] is True
+
+
+def test_exceeds_plausible_flag_kept_not_dropped(tmp_path):
+    """Ertis_2024-09.pdf: Kishi Karakozha Copper 32,9 mg/dm3 — above
+    PLAUSIBLE_MAX (25.0) but confirmed real on manual review (that river has
+    recurring severe Cu contamination: 22.7, 9.04, 32.9 across other
+    months). Flag it, don't silently discard genuine extreme data."""
+    body = "Мыс             мг/дм3    32,9\n"
+    path = _write_bulletin(tmp_path, "Ertis_2024-09", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    assert len(rows) == 1
+    assert rows[0]["Concentration"] == 32.9
+    assert rows[0]["exceeds_plausible"] is True
+    assert rows[0]["below_detection"] is False
 
 
 def test_ushkysh_fenol_spelling_recognized(tmp_path):

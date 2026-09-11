@@ -85,6 +85,7 @@ def dashboard_summary(body: FilterRequest):
         "region_stats": dashboard_service.region_stats(filtered),
         "region_stats_lakes": dashboard_service.region_stats_lakes(filtered),
         "region_stats_worst_parameter": dashboard_service.region_stats_worst_parameter(filtered),
+        "exceedance_catalog": dashboard_service.exceedance_catalog(filtered),
         "record_count": len(filtered),
         "gis": gis_bundle(filtered),
     }

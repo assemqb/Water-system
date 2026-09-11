@@ -143,31 +143,36 @@ class DashboardService:
     def insights(self, df: pd.DataFrame, lang: str = "en") -> list[str]:
         return generate_insights(df, lang=lang)
 
-    def _kpi_for(self, df: pd.DataFrame) -> dict:
+    def _kpi_for(self, df: pd.DataFrame, include_share_stats: bool = True) -> dict:
         if df.empty:
-            return {
-                "records": 0,
-                "median_wqi": None,
-                "over_mpc_share": None,
-                "mean_wqi": None,
-                "mean_ratio": None,
-                "high_risk_share": None,
-            }
-        return {
+            out = {"records": 0, "median_wqi": None, "mean_wqi": None, "mean_ratio": None}
+            if include_share_stats:
+                out.update({"over_mpc_share": None, "high_risk_share": None})
+            return out
+        out = {
             "records": int(len(df)),
-            # Primary metrics: median WQI and the share of measurements above
-            # MPC (Ratio > 1). A few real extreme readings (mining-affected
-            # Ertis-basin rivers) drag the arithmetic mean into the
-            # thousands even when most measurements sit near the MPC line —
-            # median is the honest "typical" figure for this data.
+            # Primary metrics: median WQI. A few real extreme readings
+            # (mining-affected Ertis-basin rivers) drag the arithmetic mean
+            # into the thousands even when most measurements sit near the
+            # MPC line — median is the honest "typical" figure for this data.
             "median_wqi": round(float(df["WQI_Score"].median()), 2),
-            "over_mpc_share": round(float((df["Ratio"] > 1).mean() * 100), 1),
             # Secondary — mean is kept for reference/debugging, always
             # rendered with an explicit "mean" label, never as the headline.
             "mean_wqi": round(float(df["WQI_Score"].mean()), 2),
             "mean_ratio": round(float(df["Ratio"].mean()), 2),
-            "high_risk_share": round(float((df["Ratio"] > 2).mean() * 100), 1),
         }
+        if include_share_stats:
+            # over_mpc_share / high_risk_share are a share OF THE ROWS PASSED
+            # IN. On worst_parameter data (river default — see `kpi`) every
+            # row is already pre-filtered to something that exceeded a
+            # threshold that month, so "83% of rows are above MPC" measures
+            # the table's reporting policy, not river pollution prevalence —
+            # meaningless, so callers on worst_parameter data omit these
+            # (see `kpi`, which calls with include_share_stats=False, and
+            # exceedance_catalog() for the river-appropriate replacement).
+            out["over_mpc_share"] = round(float((df["Ratio"] > 1).mean() * 100), 1)
+            out["high_risk_share"] = round(float((df["Ratio"] > 2).mean() * 100), 1)
+        return out
 
     def kpi(self, df: pd.DataFrame) -> dict:
         """Default KPI view: rivers (+ everything without a water_body_type,
@@ -182,10 +187,13 @@ class DashboardService:
         below, which split on table_type WITHOUT the lake exclusion — that is
         where the full_panel/worst_parameter distinction is actually
         meaningful). River statistics here are therefore necessarily built
-        from worst_parameter data; see README L2/L8 for the disclosure that
-        this may overstate typical pollution (a table that only reports
-        exceedances never contributes a "clean" data point)."""
-        return self._kpi_for(exclude_lakes(df))
+        from worst_parameter data; see README L2/L8.
+
+        over_mpc_share/high_risk_share are omitted here for exactly that
+        reason — worst_parameter rows are pre-filtered to exceedances by
+        construction, so a "share above MPC" computed on them is circular,
+        not informative. See exceedance_catalog() for what's shown instead."""
+        return self._kpi_for(exclude_lakes(df), include_share_stats=False)
 
     def kpi_lakes(self, df: pd.DataFrame) -> Optional[dict]:
         """Lake-only KPI, shown separately rather than blended into `kpi`."""
@@ -204,6 +212,42 @@ class DashboardService:
         "exceedances reported" panel rather than blended into `kpi`."""
         worst = only_worst_parameter(df)
         return self._kpi_for(worst) if not worst.empty else None
+
+    def exceedance_catalog(self, df: pd.DataFrame) -> list[dict]:
+        """River exceedance catalog: per water body + pollutant, the maximum
+        MPC ratio recorded and how many distinct months an exceedance
+        (Ratio > 1) was reported.
+
+        Shown in place of over_mpc_share/high_risk_share in the river
+        default view (`kpi`): worst_parameter rows are already pre-filtered
+        to whatever exceeded a threshold that month, so a "share above MPC"
+        computed on them describes the reporting table, not river pollution
+        prevalence. "Which river, which substance, how bad, how often" is
+        the meaningful question for this kind of data instead.
+        """
+        rivers = exclude_lakes(df)
+        if rivers.empty or "water_body" not in rivers.columns or "Pollutant" not in rivers.columns:
+            return []
+        rivers = rivers[rivers["water_body"].fillna("") != ""].copy()
+        if rivers.empty:
+            return []
+        rivers["_month"] = pd.to_datetime(rivers["Date"], errors="coerce").dt.to_period("M")
+
+        rows: list[dict] = []
+        for (water_body, pollutant), grp in rivers.groupby(["water_body", "Pollutant"]):
+            exceeded = grp[grp["Ratio"] > 1]
+            if exceeded.empty:
+                continue
+            rows.append({
+                "water_body": str(water_body),
+                "pollutant": str(pollutant),
+                "basin": str(grp["Basin"].mode().iloc[0]) if "Basin" in grp.columns and len(grp["Basin"].dropna()) else None,
+                "max_ratio": round(float(grp["Ratio"].max()), 2),
+                "months_exceeded": int(exceeded["_month"].nunique()),
+                "months_observed": int(grp["_month"].nunique()),
+            })
+        rows.sort(key=lambda r: r["max_ratio"], reverse=True)
+        return rows
 
     def data_quality(self, df: pd.DataFrame) -> dict:
         return data_quality_summary(df)

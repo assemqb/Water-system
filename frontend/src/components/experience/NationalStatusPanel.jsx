@@ -7,7 +7,7 @@ function renderMd(text) {
   return String(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
 }
 
-export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
+export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory, exceedanceCatalog = [] }) {
   const { t } = useLanguage()
   if (!kpi) return null
 
@@ -49,18 +49,37 @@ export function NationalStatusPanel({ kpi, kpiLakes, facts, nationalStory }) {
           </li>
         )}
         <li className="nsp__fact">
-          <span>{t('national.overMpc')}</span>
-          <strong><AnimatedNumber value={kpi.over_mpc_share} decimals={1} />%</strong>
-        </li>
-        <li className="nsp__fact">
-          <span>{t('national.highRisk')}</span>
-          <strong><AnimatedNumber value={kpi.high_risk_share} decimals={1} />%</strong>
-        </li>
-        <li className="nsp__fact">
           <span>{t('national.records')}</span>
           <strong><AnimatedNumber value={kpi.records} decimals={0} /></strong>
         </li>
       </ul>
+
+      {exceedanceCatalog.length > 0 && (
+        <div className="nsp__exceedances" role="note">
+          <p className="nsp__lakes-title">{t('national.exceedanceTitle')}</p>
+          <p className="nsp__lakes-note">{t('national.exceedanceNote')}</p>
+          <table className="nsp__exceedance-table">
+            <thead>
+              <tr>
+                <th>{t('national.exceedanceRiver')}</th>
+                <th>{t('national.exceedancePollutant')}</th>
+                <th>{t('national.exceedanceMaxRatio')}</th>
+                <th>{t('national.exceedanceMonths')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exceedanceCatalog.slice(0, 8).map((row, idx) => (
+                <tr key={`${row.water_body}-${row.pollutant}-${idx}`}>
+                  <td>{row.water_body}</td>
+                  <td>{row.pollutant}</td>
+                  <td>{row.max_ratio}×</td>
+                  <td>{row.months_exceeded}/{row.months_observed}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {nationalStory && (
         <p

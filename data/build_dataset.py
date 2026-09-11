@@ -60,6 +60,7 @@ MASTER_COLUMNS = [
     "water_body_type",
     "table_type",
     "below_detection",
+    "exceeds_plausible",
 ]
 
 
@@ -148,6 +149,7 @@ def _load_real_pollution() -> pd.DataFrame:
                 "water_body_type": row.get("water_body_type") or "",
                 "table_type": row.get("table_type") or "",
                 "below_detection": bool(row.get("below_detection", False)),
+                "exceeds_plausible": bool(row.get("exceeds_plausible", False)),
             }
         )
     df = pd.DataFrame(rows)
