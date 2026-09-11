@@ -9,7 +9,7 @@ from backend.services.dashboard_service import dashboard_service
 
 from analytics.chart_narratives import chart_narratives
 from analytics.gis_layers import gis_bundle
-from analytics.public_facts import lake_facts, public_facts
+from analytics.public_facts import full_panel_facts, lake_facts, public_facts, worst_parameter_facts
 from analytics.story_engine import generate_stories
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -71,15 +71,20 @@ def dashboard_summary(body: FilterRequest):
     return {
         "kpi": dashboard_service.kpi(filtered),
         "kpi_lakes": dashboard_service.kpi_lakes(filtered),
+        "kpi_full_panel": dashboard_service.kpi_full_panel(filtered),
+        "kpi_worst_parameter": dashboard_service.kpi_worst_parameter(filtered),
         "data_quality": dashboard_service.data_quality(filtered),
         "risk_alerts": dashboard_service.risk_alerts(filtered),
         "insights": dashboard_service.insights(filtered, lang=lang),
         "public_facts": public_facts(filtered),
         "lake_facts": lake_facts(filtered),
+        "full_panel_facts": full_panel_facts(filtered),
+        "worst_parameter_facts": worst_parameter_facts(filtered),
         "chart_narratives": chart_narratives(filtered, lang=lang),
         "stories": generate_stories(filtered, lang=lang),
         "region_stats": dashboard_service.region_stats(filtered),
         "region_stats_lakes": dashboard_service.region_stats_lakes(filtered),
+        "region_stats_worst_parameter": dashboard_service.region_stats_worst_parameter(filtered),
         "record_count": len(filtered),
         "gis": gis_bundle(filtered),
     }

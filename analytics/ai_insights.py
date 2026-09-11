@@ -11,7 +11,13 @@ NON_CHEMICAL = {"Water_Level_cm", "Mixed_Chemicals"}
 
 
 def _chem(df: pd.DataFrame) -> pd.DataFrame:
-    """Chemical-pollutant rows, rivers only (see analytics.water_body)."""
+    """Chemical-pollutant rows, rivers only (see analytics.water_body).
+
+    Not also restricted to full_panel: in this dataset that table layout is
+    ~all lakes/seas (Kazhydromet reports rivers via the worst-exceeding-
+    parameter table instead — see analytics.table_type and
+    dashboard_service.kpi's docstring), so rivers ∩ full_panel is ~empty.
+    """
     if "Pollutant" not in df.columns:
         return df
     return exclude_lakes(df[~df["Pollutant"].isin(NON_CHEMICAL)])

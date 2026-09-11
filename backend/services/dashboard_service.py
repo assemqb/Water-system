@@ -18,6 +18,7 @@ import plotly.graph_objects as go
 
 from analytics.ai_insights import generate_insights
 from analytics.water_body import exclude_lakes, only_lakes
+from analytics.table_type import only_full_panel, only_worst_parameter
 from analytics.gis_layers import basin_stats, pollution_hotspots
 from analytics.chart_narratives import chart_narratives
 from analytics.chat_assistant import chat as chat_assistant
@@ -170,13 +171,39 @@ class DashboardService:
 
     def kpi(self, df: pd.DataFrame) -> dict:
         """Default KPI view: rivers (+ everything without a water_body_type,
-        i.e. water-level/reference rows) — excludes lakes (see L7 / analytics.water_body)."""
+        i.e. water-level/reference rows) — excludes lakes (see L7 /
+        analytics.water_body).
+
+        NOT also restricted to full_panel: in this dataset the two table
+        layouts correlate almost perfectly with water_body_type — Kazhydromet
+        reports lakes/seas via the comprehensive "Ингредиенттер атауы" panel
+        and rivers via the "worst exceeding parameter" Кесте table, so
+        rivers ∩ full_panel is ~empty (see kpi_full_panel/kpi_worst_parameter
+        below, which split on table_type WITHOUT the lake exclusion — that is
+        where the full_panel/worst_parameter distinction is actually
+        meaningful). River statistics here are therefore necessarily built
+        from worst_parameter data; see README L2/L8 for the disclosure that
+        this may overstate typical pollution (a table that only reports
+        exceedances never contributes a "clean" data point)."""
         return self._kpi_for(exclude_lakes(df))
 
     def kpi_lakes(self, df: pd.DataFrame) -> Optional[dict]:
         """Lake-only KPI, shown separately rather than blended into `kpi`."""
         lakes = only_lakes(df)
         return self._kpi_for(lakes) if not lakes.empty else None
+
+    def kpi_full_panel(self, df: pd.DataFrame) -> Optional[dict]:
+        """Comprehensive-panel-only KPI (river + lake), shown as a separate
+        view from the worst_parameter-only one below. NOT lake-excluded —
+        see `kpi` docstring for why this table layout is ~all lakes/seas."""
+        full = only_full_panel(df)
+        return self._kpi_for(full) if not full.empty else None
+
+    def kpi_worst_parameter(self, df: pd.DataFrame) -> Optional[dict]:
+        """worst_parameter-only KPI (river + lake), shown as a separate
+        "exceedances reported" panel rather than blended into `kpi`."""
+        worst = only_worst_parameter(df)
+        return self._kpi_for(worst) if not worst.empty else None
 
     def data_quality(self, df: pd.DataFrame) -> dict:
         return data_quality_summary(df)
@@ -203,12 +230,17 @@ class DashboardService:
         return rows
 
     def region_stats(self, df: pd.DataFrame) -> list[dict]:
-        """Per-region metrics for map hover/tooltips — rivers by default (see `kpi`)."""
+        """Per-region metrics for map hover/tooltips — rivers by default (see `kpi` for why
+        this is not also restricted to full_panel: it would empty out to ~nothing)."""
         return self._region_stats_for(exclude_lakes(df))
 
     def region_stats_lakes(self, df: pd.DataFrame) -> list[dict]:
         """Same per-region metrics, lake water bodies only."""
         return self._region_stats_for(only_lakes(df))
+
+    def region_stats_worst_parameter(self, df: pd.DataFrame) -> list[dict]:
+        """Same per-region metrics, worst_parameter readings only (river + lake)."""
+        return self._region_stats_for(only_worst_parameter(df))
 
     def risk_alerts(self, df: pd.DataFrame) -> dict:
         high = df[df["Ratio"] > 2]

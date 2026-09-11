@@ -98,7 +98,17 @@ def station_stats(df: pd.DataFrame) -> list[dict[str, Any]]:
 
 
 def basin_stats(df: pd.DataFrame) -> list[dict[str, Any]]:
-    """Per-basin statistics for basin explorer."""
+    """Per-basin statistics for basin explorer.
+
+    NOT restricted to full_panel: that table layout is ~all lakes/seas in
+    this dataset (Kazhydromet reports rivers via the worst_parameter table
+    instead — see analytics.table_type), so restricting here would silently
+    drop river-chemical exceedances from a basin's stats while keeping its
+    water-level data, understating basins with only worst_parameter
+    chemical coverage. See dashboard_service.kpi_full_panel/
+    kpi_worst_parameter for where that split is applied without this
+    geography confound.
+    """
     if df.empty or "Basin" not in df.columns:
         return []
 

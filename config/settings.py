@@ -268,6 +268,10 @@ LIMITATIONS = [
     "L7: Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not "
     "anthropogenic pollution — see water_body_type ('lake' vs 'river') before reading a high Sulfates "
     "ratio there as a pollution signal.",
+    "L8: table_type ('full_panel' vs 'worst_parameter') and water_body_type are not independent — "
+    "Kazhydromet reports lakes/seas via the comprehensive panel and rivers via the worst-exceeding-"
+    "parameter table almost exclusively, so river statistics are necessarily worst_parameter-based "
+    "(a biased, exceedance-only sample); see analytics/table_type.py and README section 6.",
 ]
 
 ML_DISCLAIMER = (

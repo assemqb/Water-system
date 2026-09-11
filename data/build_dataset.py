@@ -58,6 +58,8 @@ MASTER_COLUMNS = [
     "description",
     "water_body",
     "water_body_type",
+    "table_type",
+    "below_detection",
 ]
 
 
@@ -144,6 +146,8 @@ def _load_real_pollution() -> pd.DataFrame:
                 "description": f"Kazhydromet official bulletin — {row['source_bulletin']}",
                 "water_body": row.get("water_body") or "",
                 "water_body_type": row.get("water_body_type") or "",
+                "table_type": row.get("table_type") or "",
+                "below_detection": bool(row.get("below_detection", False)),
             }
         )
     df = pd.DataFrame(rows)

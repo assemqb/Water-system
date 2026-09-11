@@ -83,7 +83,12 @@ def _suggestions(lang: str) -> list[str]:
 def _chemical_df(df: pd.DataFrame) -> pd.DataFrame:
     """Chemical-pollutant rows, rivers only (see analytics.water_body / L7) —
     keeps the analyst's narrative from citing a naturally saline lake's
-    Sulfates ratio as if it were pollution."""
+    Sulfates ratio as if it were pollution.
+
+    Not also restricted to full_panel: that table layout is ~all lakes/seas
+    in this dataset (see analytics.table_type / dashboard_service.kpi's
+    docstring), so rivers ∩ full_panel is ~empty — river readings here are
+    necessarily worst_parameter (disclosed in README L2/L8)."""
     if "Pollutant" not in df.columns:
         return df
     return exclude_lakes(df[~df["Pollutant"].isin(NON_CHEMICAL_POLLUTANTS)])

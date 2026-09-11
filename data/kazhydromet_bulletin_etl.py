@@ -13,23 +13,34 @@ previous statistically-reconstructed demo dataset.
 Requires the `pdftotext` binary (poppler-utils): `brew install poppler` /
 `apt-get install poppler-utils`.
 
-Two source table layouts appear across bulletins/months, handled differently:
+Two source table layouts appear across bulletins/months, recorded as
+`table_type` and handled differently:
 
-  1. "Class exceedance" tables: one row (or a short multi-row block) per
-     water body, e.g. "Жайық өз.  3 сынып  ОБТ5  мг/дм3  2.639" — the water
-     body name is read directly off the row (or, when it is visually
-     centered on row 2 of a multi-row block, the nearest name within a
-     bounded line window).
-  2. "Ингредиенттер(дің) атауы" numbered tables: one row per parameter, one
-     COLUMN per water body (e.g. Alakol / Bolshoe Almatinskoe / Balkhash
-     lakes side by side). The water body names live in 1-3 wrapped header
-     lines; pdftotext -layout preserves horizontal character position, so a
-     value is attributed to the header whose column-start position is
-     nearest to its own. A minority of bulletins repeat the "Көл"/"өз"
-     classifier as a prefix for every column instead of a suffix per name
-     ("Көл Копа  Көл Зеренді  Көл Бурабай ..."); that layout cannot be
-     reliably separated by this method and is intentionally left
-     unattributed rather than risk merging two water bodies' values.
+  1. "worst_parameter" — "Кесте"/class-exceedance tables: one row (or a short
+     multi-row block) per water body, listing only whichever parameter(s)
+     exceeded that month, e.g. "Жайық өз.  3 сынып  ОБТ5  мг/дм3  2.639".
+     The water body name is read off the nearest name line within a bounded
+     window (before OR after — Kazhydromet lays these out with the name
+     sometimes visually centered on row 2 of a multi-row block, or even
+     after the value line entirely when a new object's block starts before
+     its own name line is reached), including names split across 2-3 lines
+     by column wrapping (e.g. "Глубочанка" on one line, "өзені" appearing
+     only after the value line for the *next* object). Only the single
+     worst-parameter value per water body is present, so this layout cannot
+     support a "typical concentration" statistic — see analytics/water_body.py
+     and README L2/L8 for how the two table types are kept apart downstream.
+  2. "full_panel" — "Ингредиенттер(дің) атауы" numbered tables: one row per
+     parameter, one COLUMN per water body (e.g. Alakol / Bolshoe Almatinskoe
+     / Balkhash lakes side by side), reporting every tracked substance for
+     each water body whether or not it happens to be the worst one that
+     month. Water body names live in 1-3 wrapped header lines; pdftotext
+     -layout preserves horizontal character position, so a value is
+     attributed to the header whose column-start position is nearest to its
+     own. A minority of bulletins repeat the "Көл"/"өз" classifier as a
+     prefix for every column instead of a suffix per name ("Көл Копа  Көл
+     Зеренді  Көл Бурабай ..."); that layout cannot be reliably separated by
+     this method and is intentionally left unattributed rather than risk
+     merging two water bodies' values.
 
 Pipeline:
     1. download_bulletins()  — fetch PDFs listed in a manifest JSON
@@ -95,6 +106,7 @@ TERMS: dict[str, tuple[str, float]] = {
     "фенолдар": ("Phenols", 1.0),
     "фенолы": ("Phenols", 1.0),
     "ұшпа фенолдар": ("Phenols", 1.0),
+    "ұшқыш фенол": ("Phenols", 1.0),
     "летучие фенолы": ("Phenols", 1.0),
     "мұнай өнімдері": ("Oil Products", 1.0),
     "нефтепродукты": ("Oil Products", 1.0),
@@ -128,7 +140,7 @@ MONTH_LAST_DAY = {
     "07": "31", "08": "31", "09": "30", "10": "31", "11": "30", "12": "31",
 }
 
-# Water-body name detection for "class exceedance" style rows: 1-3 leading
+# Water-body name detection for "worst_parameter" style rows: 1-3 leading
 # words ending in a recognized Kazakh hydronym suffix.
 SUFFIXES = r"(?:өз\.|өзені|көл\.|көлі|тарм\.|тармағы|су қоймасы|шығанағы|теңізі|бассейні|арнасы|каналы)"
 LEADING_WB_RE = re.compile(
@@ -143,17 +155,71 @@ STANDALONE_CLASSIFIERS = {
     "теңізі", "қоймасы", "бассейні",
 }
 
+# A water-body name split across lines by column wrapping, where the
+# trailing classifier suffix lands on its own line — sometimes only AFTER
+# the value line for the object (e.g. Ertis_2025-11.pdf: "Глубочанка" / value
+# row / "өзені"; Ertis_2025-07.pdf: "Бұқтырма су" / value row / "қоймасы").
+# First word must start uppercase (proper noun); a second word, if present,
+# may be lowercase ("су" in "Бұқтырма су қоймасы").
+ORPHAN_NAME_RE = re.compile(
+    r"^\s*([А-ЯӘІҢҒҮҰҚӨҺ][а-яәіңғүұқөһ]+(?:\s+[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]+)?)\s*$"
+)
+ORPHAN_SUFFIX_ONLY_RE = re.compile(
+    r"^\s*(өзені|өз\.|көлі|көл\.|тармағы|тарм\.|қоймасы|теңізі|бассейні|каналы|шығанағы)\s*$",
+    re.IGNORECASE,
+)
+ORPHAN_LOOKAHEAD = 3  # lines to search forward for the trailing suffix fragment
+
+# Bare-word lines seen stacked beside a single value in "worst_parameter"
+# blocks when several parameters share one measurement column visually but
+# pdftotext linearizes them into one row with only ONE actually adjacent to
+# the value (e.g. Ertis_2025-11.pdf p.15, Бұқтырма өзені: марганец / ОБТ5 /
+# [value] / жалпы темір / мыс stacked around a single "0,016"). Which listed
+# parameter the number belongs to cannot be recovered from the flattened
+# text, so any value with 2+ of these immediately around it is dropped
+# rather than guessed.
+BARE_PARAM_WORDS = {
+    "марганец", "жалпы темір", "темір", "магний", "кермектік", "кермектігі",
+    "минералдану", "минерализация", "хлоридтер", "фосфаттар", "жалпы фосфор",
+    "қалқыма заттар", "өлшенген заттар", "аммоний-иондар", "аммоний ионы",
+    "тұз аммонийі", "никель", "кадмий", "қорғасын", "обт5", "охт", "натрий",
+    "кальций", "калий", "гидрокарбонаттар", "нитритті азот", "құрғақ қалдық",
+    "хром", "мышьяк", "күшән", "сынап",
+} | set(TERM_KEYS)
+AMBIGUOUS_CELL_WINDOW = 2
+
 # Known cosmetic artifacts from column-wrap merging (a name letter or two
-# landing on its own wrapped line) or trailing/leading connective words
-# ("бойынша" = "regarding", "айына" = "for the month of") that a strict
-# proximity-based column merge cannot distinguish from a genuine second word.
+# landing on its own wrapped line) or leading/trailing connective words
+# ("бірлігі" = "unit", "айына" = "for the month of", "бойынша" = "regarding")
+# that a strict proximity-based column merge, or the greedy leading-word
+# match, cannot distinguish from a genuine extra word in the name.
+JUNK_WORDS = {"бірлігі", "айына", "бойынша", "атауы"}
+
 NAME_FIXUPS = {
     "Шола қ көлі": "Шолақ көлі",
     "Сұлта нк елді көлі": "Сұлтанкелді көлі",
-    "Билікөл көлі бойынша": "Билікөл көлі",
-    "айына Билікөл көлі бойынша": "Билікөл көлі",
 }
 
+# Spelling/abbreviation variants that refer to the same water body, found by
+# inspecting the full set of extracted names — unify to one canonical form
+# so the same river isn't split into two rows in any per-water-body stat.
+CANONICAL_NAMES = {
+    "Балкаш көлі": "Балқаш көлі",  # Cyrillic к vs Kazakh қ
+    "Еміл өз.": "Еміл өзені",
+    "Ембі өз.": "Ембі өзені",
+    "Тобыл өз.": "Тобыл өзені",
+    "Торғай өз.": "Торғай өзені",
+    "Тоғызақ өз.": "Тоғызақ өзені",
+    "Обаған өз.": "Обаған өзені",
+    "Әйет өз.": "Әйет өзені",
+    "Жайық өз.": "Жайық өзені",
+    "Қиғаш өз.": "Қиғаш өзені",
+    "Арасан өз.": "Арасан өзені",
+    "Маховка өз.": "Маховка өзені",
+    "Секисовка өз.": "Секисовка өзені",
+    "Үй өз.": "Үй өзені",
+    "Кіші Қарақожа өз.": "Кіші Қарақожа өзені",
+}
 
 # Sea names that appear as bare proper nouns in ingredient-table column
 # headers (e.g. "Солтүстік Каспий" = "Northern Caspian") without a generic
@@ -170,8 +236,19 @@ def classify_type(name: str) -> str:
     return "river"
 
 
+def _strip_junk_words(name: str) -> str:
+    words = name.split()
+    while words and words[0].lower() in JUNK_WORDS:
+        words = words[1:]
+    while words and words[-1].lower() in JUNK_WORDS:
+        words = words[:-1]
+    return " ".join(words)
+
+
 def clean_water_body_name(name: str) -> str:
-    return NAME_FIXUPS.get(name, name)
+    name = _strip_junk_words(name)
+    name = NAME_FIXUPS.get(name, name)
+    return CANONICAL_NAMES.get(name, name)
 
 
 def is_plausible_name(name: str) -> bool:
@@ -199,6 +276,16 @@ def _term_for(prefix: str) -> tuple[str, float] | None:
         if p == term or p.endswith(" " + term):
             return TERMS[term]
     return None
+
+
+def _is_ambiguous_cell(lines: list[str], i: int, window: int = AMBIGUOUS_CELL_WINDOW) -> bool:
+    count = 0
+    for k in range(max(0, i - window), min(len(lines), i + window + 1)):
+        if k == i:
+            continue
+        if lines[k].strip().lower() in BARE_PARAM_WORDS:
+            count += 1
+    return count >= 2
 
 
 def _repair_number_split(rest: str) -> str:
@@ -279,6 +366,46 @@ def _parse_ingredient_header(lines: list[str], start_idx: int) -> tuple[list[int
     return starts, names, data_start
 
 
+def _scan_water_body_lines(lines: list[str]) -> dict[int, tuple[str, str]]:
+    """
+    Pre-scan every "worst_parameter" water-body name occurrence, registered
+    at the line index a nearest-neighbor lookup should associate with it.
+
+    Two shapes are recognized:
+      - a complete name on one line (LEADING_WB_RE) — the common case.
+      - a name split by column wrapping across up to `ORPHAN_LOOKAHEAD`
+        lines, where the trailing classifier suffix ("өзені", "қоймасы", ...)
+        appears alone on its own line — sometimes only after the object's
+        value line. Registered at the FIRST fragment's line index, so a
+        nearest-neighbor search from any line in between (including the
+        value line itself) finds it close by.
+    """
+    wb_by_line: dict[int, tuple[str, str]] = {}
+    claimed_suffix_lines: set[int] = set()
+    for idx, ln in enumerate(lines):
+        wbm = LEADING_WB_RE.match(ln)
+        if wbm:
+            name = clean_water_body_name(re.sub(r"\s+", " ", wbm.group(1)).strip())
+            if is_plausible_name(name):
+                wb_by_line[idx] = (name, classify_type(name))
+                continue
+
+        om = ORPHAN_NAME_RE.match(ln)
+        if not om:
+            continue
+        for k in range(idx + 1, min(len(lines), idx + 1 + ORPHAN_LOOKAHEAD)):
+            if k in claimed_suffix_lines:
+                continue
+            sm = ORPHAN_SUFFIX_ONLY_RE.match(lines[k])
+            if sm:
+                name = clean_water_body_name(f"{om.group(1).strip()} {sm.group(1).strip()}")
+                if is_plausible_name(name):
+                    wb_by_line[idx] = (name, classify_type(name))
+                    claimed_suffix_lines.add(k)
+                break
+    return wb_by_line
+
+
 def download_bulletins(manifest_path: Path, pdf_dir: Path) -> None:
     """Download every bulletin PDF listed in the manifest (skips existing files)."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -310,16 +437,7 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
 
     lines = txt_path.read_text(encoding="utf-8", errors="ignore").split("\n")
 
-    # Pre-scan every "class exceedance" water-body name line with its index,
-    # for a bounded nearest-neighbor lookup when a pollutant row precedes the
-    # name line within the same visually-centered multi-row block.
-    wb_by_line: dict[int, tuple[str, str]] = {}
-    for idx, ln in enumerate(lines):
-        wbm = LEADING_WB_RE.match(ln)
-        if wbm:
-            name = clean_water_body_name(re.sub(r"\s+", " ", wbm.group(1)).strip())
-            if is_plausible_name(name):
-                wb_by_line[idx] = (name, classify_type(name))
+    wb_by_line = _scan_water_body_lines(lines)
     wb_line_indices = sorted(wb_by_line)
 
     def _crosses_boundary(a: int, b: int) -> bool:
@@ -335,8 +453,6 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
         return wb_by_line[best] if best is not None else (None, None)
 
     rows: list[dict] = []
-    current_wb: str | None = None
-    current_wb_type: str | None = None
     in_ingredient_table = False
     col_starts: list[int] = []
     col_names: list[str] = []
@@ -345,7 +461,6 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
         line = lines[i]
 
         if "Қосымша" in line:
-            current_wb, current_wb_type = None, None
             in_ingredient_table = False
 
         if re.search(r"Ингредиент", line):
@@ -354,23 +469,14 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
             # header, whether or not column names could be attributed. The
             # bailout in _parse_ingredient_header (repeated-prefix layout, e.g.
             # "Көл Копа  Көл Зеренді  Көл Бурабай ...") returns col_names=[] —
-            # falling through to the stateful current_wb/nearest_wb scanner
-            # here would be *worse* than no attribution: that scanner isn't
-            # column-aware, so it would confidently glue one name (whichever
-            # LEADING_WB_RE happens to match nearby) onto every water body's
-            # values in this multi-column table.
+            # falling through to the worst_parameter nearest_wb scanner here
+            # would be *worse* than no attribution: that scanner isn't
+            # column-aware, so it would confidently glue one name onto every
+            # water body's values in this multi-column table.
             in_ingredient_table = True
-            current_wb, current_wb_type = None, None
             i = data_start
             continue
 
-        wb_match = LEADING_WB_RE.match(line)
-        if wb_match and not in_ingredient_table:
-            candidate = clean_water_body_name(re.sub(r"\s+", " ", wb_match.group(1)).strip())
-            if is_plausible_name(candidate):
-                current_wb, current_wb_type = candidate, classify_type(candidate)
-
-        m = LINE_RE.match(line) if not (in_ingredient_table and not col_starts) else None
         # `in_ingredient_table and not col_starts` means the repeated-prefix
         # bailout fired for this table. Investigating one such table
         # (Esil_2024-06.pdf, "Мамыр 2024" sub-table) found it also had a
@@ -379,6 +485,14 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
         # BOD5-scale magnitudes) up by one — not just an unattributable
         # column layout. Skip the table's VALUES entirely here, not only
         # water_body: a wrong concentration is worse than a missing one.
+        skip_table = in_ingredient_table and not col_starts
+        m = LINE_RE.match(line) if not skip_table else None
+        if m and not in_ingredient_table and _is_ambiguous_cell(lines, i):
+            # Multiple parameter names stacked around one value (pdftotext
+            # linearized several visually-stacked rows into one) — cannot
+            # tell which parameter the number belongs to. See
+            # Ertis_2025-11.pdf p.15, "Бұқтырма өзені" block.
+            m = None
         if m:
             term = _term_for(m.group("prefix"))
             if term:
@@ -390,10 +504,11 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                         val = float(nm.group().replace(",", "."))
                     except ValueError:
                         continue
-                    if val <= 0:
+                    if val < 0:
                         continue
+                    below_detection = val == 0
                     concentration = round(val * factor, 6)
-                    if concentration > PLAUSIBLE_MAX[pollutant]:
+                    if not below_detection and concentration > PLAUSIBLE_MAX[pollutant]:
                         continue
 
                     if in_ingredient_table and col_starts:
@@ -402,9 +517,7 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                         idx = max(0, min(idx, len(col_names) - 1))
                         wb, wbt = col_names[idx], classify_type(col_names[idx])
                     else:
-                        wb, wbt = current_wb, current_wb_type
-                        if not wb:
-                            wb, wbt = nearest_wb(i)
+                        wb, wbt = nearest_wb(i)
 
                     rows.append(
                         {
@@ -414,8 +527,10 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                             "Pollutant": pollutant,
                             "Concentration": concentration,
                             "MPC": POLLUTANTS[pollutant].mpc,
+                            "below_detection": below_detection,
                             "water_body": wb or "",
                             "water_body_type": wbt or "",
+                            "table_type": "full_panel" if in_ingredient_table else "worst_parameter",
                             "station": "",
                             "source_bulletin": stem + ".pdf",
                         }
@@ -449,7 +564,8 @@ def write_csv(rows: list[dict], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         "ID", "Date", "Basin", "Region", "Pollutant", "Concentration", "MPC",
-        "water_body", "water_body_type", "station", "source_bulletin",
+        "below_detection", "water_body", "water_body_type", "table_type",
+        "station", "source_bulletin",
     ]
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -473,9 +589,11 @@ def main() -> None:
     rows = extract_pollution_records(pdf_dir, txt_dir)
     write_csv(rows, out_path)
     with_wb = sum(1 for r in rows if r["water_body"])
+    full_panel = sum(1 for r in rows if r["table_type"] == "full_panel")
     pct = 100 * with_wb / len(rows) if rows else 0
     print(f"✅ Extracted {len(rows)} real Kazhydromet chemical readings for {args.year} -> {out_path}")
     print(f"   water_body attributed: {with_wb}/{len(rows)} ({pct:.1f}%)")
+    print(f"   table_type: full_panel={full_panel}, worst_parameter={len(rows) - full_panel}")
 
 
 if __name__ == "__main__":

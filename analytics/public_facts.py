@@ -6,6 +6,7 @@ import pandas as pd
 
 from analytics.ai_insights import NON_CHEMICAL, _chem
 from analytics.water_body import only_lakes
+from analytics.table_type import only_worst_parameter, restrict_to_full_panel
 
 
 def _facts_for(base: pd.DataFrame) -> dict:
@@ -81,3 +82,38 @@ def lake_facts(df: pd.DataFrame) -> dict:
     chem = df[~df["Pollutant"].isin(NON_CHEMICAL)]
     lakes = only_lakes(chem)
     return _facts_for(lakes)
+
+
+def worst_parameter_facts(df: pd.DataFrame) -> dict:
+    """Same shape as public_facts, computed for worst_parameter readings only
+    (river + lake — NOT lake-excluded; see full_panel_facts docstring for why).
+
+    A worst_parameter table only ever reports the substance that exceeded a
+    threshold that month — never a "normal" reading — so it is a biased
+    sample of typical concentration. Shown separately from public_facts
+    rather than blended into the same ranking (see analytics.table_type).
+    """
+    if df.empty or "Pollutant" not in df.columns:
+        return {}
+    chem = df[~df["Pollutant"].isin(NON_CHEMICAL)]
+    worst = only_worst_parameter(chem)
+    return _facts_for(worst)
+
+
+def full_panel_facts(df: pd.DataFrame) -> dict:
+    """Same shape as public_facts, computed for full_panel readings only
+    (river + lake — NOT lake-excluded).
+
+    In this dataset the full_panel table layout is ~all lakes/seas —
+    Kazhydromet reports rivers via the worst_parameter table instead (see
+    analytics.table_type and dashboard_service.kpi's docstring) — so
+    rivers ∩ full_panel is ~empty and public_facts (the river-default view)
+    is deliberately NOT also restricted to full_panel. This is the
+    comprehensive-panel counterpart to worst_parameter_facts, not a
+    "cleaner" version of public_facts.
+    """
+    if df.empty or "Pollutant" not in df.columns:
+        return {}
+    chem = df[~df["Pollutant"].isin(NON_CHEMICAL)]
+    full = restrict_to_full_panel(chem)
+    return _facts_for(full)
