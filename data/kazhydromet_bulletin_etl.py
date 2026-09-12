@@ -179,7 +179,7 @@ STANDALONE_CLASSIFIERS = {
 # First word must start uppercase (proper noun); a second word, if present,
 # may be lowercase ("су" in "Бұқтырма су қоймасы").
 ORPHAN_NAME_RE = re.compile(
-    r"^\s*([А-ЯӘІҢҒҮҰҚӨҺ][а-яәіңғүұқөһ]+(?:\s+[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]+)?)\s*$"
+    r"^\s*([А-ЯӘІҢҒҮҰҚӨҺ][а-яәіңғүұқөһ]+(?:\s+[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]+)?)(?=\s{2,}|\s*$)"
 )
 ORPHAN_SUFFIX_ONLY_RE = re.compile(
     r"^\s*(өзені|өз\.|көлі|көл\.|тармағы|тарм\.|қоймасы|теңізі|бассейні|каналы|шығанағы)\s*$",

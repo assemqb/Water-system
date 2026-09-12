@@ -89,7 +89,7 @@ ID,Date,Basin,Region,Pollutant,Concentration,MPC,below_detection,exceeds_plausib
 88,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00146,0.001,False,False,False,Есентай өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
 89,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00163,0.001,False,False,False,Қорғас өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
 90,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00167,0.001,False,False,False,Текес өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
-91,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00191,0.001,False,False,False,Іле өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
+91,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00191,0.001,False,False,False,Үлкен Алматы өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
 92,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00245,0.001,False,False,False,Темірлік өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
 93,2025-04-30,Balkash-Alakol,Almaty,Copper,0.0034,0.001,False,False,False,Қаскелен өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
 94,2025-04-30,Balkash-Alakol,Almaty,Copper,0.00397,0.001,False,False,False,Іле өзені,river,worst_parameter,,Balkash-Alakol_2025-04.pdf
@@ -152,7 +152,7 @@ ID,Date,Basin,Region,Pollutant,Concentration,MPC,below_detection,exceeds_plausib
 151,2025-07-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
 152,2025-07-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
 153,2025-07-31,Balkash-Alakol,Almaty,Sulfates,20.0,500.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
-154,2025-07-31,Balkash-Alakol,Almaty,Sulfates,106.0,500.0,False,False,False,Каратал өзені,river,worst_parameter,,Balkash-Alakol_2025-07.pdf
+154,2025-07-31,Balkash-Alakol,Almaty,Sulfates,106.0,500.0,False,False,False,Қапшағай су қоймасы,lake,worst_parameter,,Balkash-Alakol_2025-07.pdf
 155,2025-07-31,Balkash-Alakol,Almaty,Sulfates,2162.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
 156,2025-07-31,Balkash-Alakol,Almaty,Sulfates,2462.0,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
 157,2025-07-31,Balkash-Alakol,Almaty,Zinc,0.0014,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2025-07.pdf
@@ -211,7 +211,7 @@ ID,Date,Basin,Region,Pollutant,Concentration,MPC,below_detection,exceeds_plausib
 210,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00114,0.001,False,False,False,Темірлік өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
 211,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00119,0.001,False,False,False,,,worst_parameter,,Balkash-Alakol_2025-10.pdf
 212,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00125,0.001,False,False,False,Қаскелен өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
-213,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00148,0.001,False,False,False,Есентай өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
+213,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00148,0.001,False,False,False,Кіші Алматы өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
 214,2025-10-31,Balkash-Alakol,Almaty,Copper,0.0022,0.001,False,False,False,Іле өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
 215,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00227,0.001,False,False,False,Қорғас өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf
 216,2025-10-31,Balkash-Alakol,Almaty,Copper,0.00228,0.001,False,False,False,Текес өзені,river,worst_parameter,,Balkash-Alakol_2025-10.pdf

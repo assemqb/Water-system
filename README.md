@@ -587,6 +587,26 @@ Manual verification requests against `validation_sample_2.csv`'s underlying page
 
 **`validation_sample_3.csv`** (30 rows, `random.seed(20260913)`, stratified ≥15 from Balkash-Alakol/Ertis worst_parameter "Кесте" blocks and ≥8 from the newly recovered Esil full_panel Burabay tables) is provided for the next round of manual spot-checking against source pages.
 
+### Round 4 — `validation_sample_3.csv` manual check
+
+**Result: 26/27 concentrations/attributions correct, 1 wrong attribution found.**
+
+Balkash-Alakol_2025-10.pdf p.14, Кесте 9: Copper 0.00148 was attributed to Есентай өзені; the correct water body is **Кіші Алматы өзені** (Есентай's own Copper that month is a different value, 0.00109 — both appear in the same block pair, so the wrong one silently "looked" plausible).
+
+Root cause: this specific "Кесте" format has a *second* class column reporting the *previous* year's classification, filled with a bare "-" placeholder when none exists. That doesn't confuse the class-label scan itself (a bare "-" never matches `CLASS_LABEL_RE`) — the actual gap was in name detection: "Кіші Алматы" (the name's first fragment, before its trailing "өзені" arrives on a later line) shares its own line with an unrelated parameter's value (`жалпы темір ... 0,11`), and the orphan-name pattern only recognized a fragment that was *alone* on its line. Missing it, resolution fell through to the old nearest-line fallback, which picked Есентай — one block over — instead. Fixed by allowing the orphan-name match to be followed by other content (a large gap then more text), not just end-of-line.
+
+**Corpus-wide check:** 9 of 12 Balkash-Alakol 2025 bulletins use this two-class-column-with-dash format (`Balkash-Alakol_2025-{02,04,05,07,08,09,10,11,12}`). Comparing full 2024+2025 attribution before/after the fix found **3 rows total changed water body** across the whole corpus (all in Balkash-Alakol/2025, all previously wrong, all confirmed against the source PDF):
+
+| Bulletin | Pollutant | Concentration | Before | After |
+|---|---|---:|---|---|
+| Balkash-Alakol_2025-04 | Copper | 0.00191 | Іле өзені | **Үлкен Алматы өзені** |
+| Balkash-Alakol_2025-07 | Sulfates | 106 | Каратал өзені | **Қапшағай су қоймасы** |
+| Balkash-Alakol_2025-10 | Copper | 0.00148 | Есентай өзені | **Кіші Алматы өзені** *(the reported case)* |
+
+No 2024 rows changed. Regression test: `test_orphan_name_sharing_a_line_with_a_value_cell`.
+
+**Validation-sample page-number generator fix:** the ad hoc script used to derive a `page` hint for `validation_sample_3.csv` (counting `pdftotext -layout`'s form-feed page breaks) had two bugs, found from the report that Esil_2025-06's row 1 pointed to page 31 while the actual lake table is on 29–30: (1) a below-detection value (`0.0`) produced a degenerate search anchor (`"0,0"`) that matched an unrelated table's unrelated zero elsewhere in the document; (2) a full_panel row's water-body-name fallback search wasn't scoped to start after the first ingredient-table trigger, so an earlier narrative mention of the same name won. Both fixed; all 30 rows in the regenerated sample now resolve to a page.
+
 ---
 
 ## 23. Authors

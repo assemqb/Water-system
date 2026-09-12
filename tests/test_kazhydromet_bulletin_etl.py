@@ -207,6 +207,35 @@ def test_class_label_block_boundary_balkash_alakol(tmp_path):
     assert by_wb.get("Баянкөл өзені") == 0.0014
 
 
+def test_orphan_name_sharing_a_line_with_a_value_cell(tmp_path):
+    """Balkash-Alakol_2025-10.pdf p.14, Кесте 9: this table has a SECOND
+    class column for the previous year ("қазан 2024 жыл"), filled with a
+    bare "-" when no prior classification exists — so the object's own
+    class label ("3 класс") sits alone on the line BEFORE its name, and the
+    name's first fragment ("Кіші Алматы") shares its line with an unrelated
+    parameter's value ("жалпы темір ... 0,11") instead of being alone on
+    it. The orphan-name scan required the whole line to be just the name,
+    so it missed this fragment entirely and fell back to the nearest
+    *registered* name instead — Есентай өзені, one block over. Copper
+    0,00148 belongs to Кіші Алматы, not Есентай (which has its own,
+    different Copper reading, 0,00109, right after)."""
+    body = (
+        "                                3 класс          магний       мг/дм3         26,267\n"
+        " Кіші Алматы                                   жалпы темір    мг/дм3          0,11\n"
+        "                      -        (орташа\n"
+        "    өзені\n"
+        "                             ластанған)           мыс         мг/дм3        0,00148\n"
+        "                                3 класс        жалпы темір    мг/дм3         0,165\n"
+        " Есентай өзені        -        (орташа\n"
+        "                             ластанған)            мыс        мг/дм3        0,00109\n"
+    )
+    path = _write_bulletin(tmp_path, "Balkash-Alakol_2025-10", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    by_wb = {r["water_body"]: r["Concentration"] for r in rows}
+    assert by_wb.get("Кіші Алматы өзені") == 0.00148
+    assert by_wb.get("Есентай өзені") == 0.00109
+
+
 def test_suspected_source_error_flagged_not_corrected(tmp_path):
     """Balkash-Alakol_2025-01.pdf p.13: Темірлік өзені's phosphorus
     (0,0024 — ~100x lower than every other river that month) and copper
