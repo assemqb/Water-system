@@ -1,298 +1,302 @@
-ID,Date,Basin,Region,Pollutant,Concentration,MPC,below_detection,exceeds_plausible,water_body,water_body_type,table_type,station,source_bulletin
-1,2024-06-30,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
-2,2024-06-30,Aralo-Syrdarya,Kyzylorda,Nitrates,0.061972,45.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
-3,2024-06-30,Aralo-Syrdarya,Kyzylorda,Oil Products,0.02,0.05,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
-4,2024-06-30,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
-5,2024-06-30,Aralo-Syrdarya,Kyzylorda,Sulfates,256.0,500.0,False,False,Сырдария өзені,river,worst_parameter,,Aralo-Syrdarya_2024-06.pdf
-6,2024-06-30,Aralo-Syrdarya,Kyzylorda,Sulfates,312.0,500.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
-7,2024-08-31,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
-8,2024-08-31,Aralo-Syrdarya,Kyzylorda,Nitrates,0.070826,45.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
-9,2024-08-31,Aralo-Syrdarya,Kyzylorda,Oil Products,0.0,0.05,True,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
-10,2024-08-31,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
-11,2024-08-31,Aralo-Syrdarya,Kyzylorda,Sulfates,240.0,500.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
-12,2024-09-30,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
-13,2024-09-30,Aralo-Syrdarya,Kyzylorda,Nitrates,0.354128,45.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
-14,2024-09-30,Aralo-Syrdarya,Kyzylorda,Oil Products,0.003,0.05,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
-15,2024-09-30,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
-16,2024-09-30,Aralo-Syrdarya,Kyzylorda,Sulfates,300.0,500.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
-17,2024-10-31,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
-18,2024-10-31,Aralo-Syrdarya,Kyzylorda,Nitrates,0.088532,45.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
-19,2024-10-31,Aralo-Syrdarya,Kyzylorda,Oil Products,0.003,0.05,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
-20,2024-10-31,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
-21,2024-10-31,Aralo-Syrdarya,Kyzylorda,Sulfates,270.0,500.0,False,False,Сырдария өзені,river,worst_parameter,,Aralo-Syrdarya_2024-10.pdf
-22,2024-10-31,Aralo-Syrdarya,Kyzylorda,Sulfates,336.0,500.0,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
-23,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0027,0.001,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-24,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0037,0.001,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-25,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0043,0.001,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-26,2024-06-30,Balkash-Alakol,Almaty,Nitrates,0.619724,45.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-27,2024-06-30,Balkash-Alakol,Almaty,Nitrates,1.283714,45.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-28,2024-06-30,Balkash-Alakol,Almaty,Nitrates,1.814906,45.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-29,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-30,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-31,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-32,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-33,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-34,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-35,2024-06-30,Balkash-Alakol,Almaty,Sulfates,14.0,500.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-36,2024-06-30,Balkash-Alakol,Almaty,Sulfates,2353.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-37,2024-06-30,Balkash-Alakol,Almaty,Sulfates,2734.333,500.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-38,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.0021,0.01,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-39,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.003,0.01,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-40,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.0039,0.01,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
-41,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0006,0.001,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-42,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0009,0.001,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-43,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0016,0.001,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-44,2024-08-31,Balkash-Alakol,Almaty,Nitrates,0.66399,45.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-45,2024-08-31,Balkash-Alakol,Almaty,Nitrates,1.593576,45.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-46,2024-08-31,Balkash-Alakol,Almaty,Nitrates,4.4266,45.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-47,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-48,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-49,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-50,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-51,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-52,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-53,2024-08-31,Balkash-Alakol,Almaty,Sulfates,8.0,500.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-54,2024-08-31,Balkash-Alakol,Almaty,Sulfates,2300.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-55,2024-08-31,Balkash-Alakol,Almaty,Sulfates,2556.667,500.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-56,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.0005,0.01,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-57,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.0007,0.01,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-58,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.001,0.01,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
-59,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0009,0.001,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-60,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0021,0.001,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-61,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0021,0.001,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-62,2024-09-30,Balkash-Alakol,Almaty,Nitrates,1.416512,45.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-63,2024-09-30,Balkash-Alakol,Almaty,Nitrates,1.859172,45.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-64,2024-09-30,Balkash-Alakol,Almaty,Nitrates,3.054354,45.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-65,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-66,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-67,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.04,0.05,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-68,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-69,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-70,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0003,0.001,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-71,2024-09-30,Balkash-Alakol,Almaty,Sulfates,10.0,500.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-72,2024-09-30,Balkash-Alakol,Almaty,Sulfates,2056.667,500.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-73,2024-09-30,Balkash-Alakol,Almaty,Sulfates,2270.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-74,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.0008,0.01,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-75,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.0016,0.01,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-76,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.002,0.01,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
-77,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0006,0.001,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-78,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0024,0.001,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-79,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0026,0.001,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-80,2024-10-31,Balkash-Alakol,Almaty,Nitrates,0.01505,45.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-81,2024-10-31,Balkash-Alakol,Almaty,Nitrates,1.505044,45.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-82,2024-10-31,Balkash-Alakol,Almaty,Nitrates,3.628041,45.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-83,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-84,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-85,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-86,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-87,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-88,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-89,2024-10-31,Balkash-Alakol,Almaty,Sulfates,12.0,500.0,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-90,2024-10-31,Balkash-Alakol,Almaty,Sulfates,349.0,500.0,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-91,2024-10-31,Balkash-Alakol,Almaty,Sulfates,2200.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-92,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.0005,0.01,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-93,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.0019,0.01,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-94,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.002,0.01,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
-95,2024-06-30,Ertis,VKO,Copper,0.0035,0.001,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-96,2024-06-30,Ertis,VKO,Copper,9.04,0.001,False,False,,,worst_parameter,,Ertis_2024-06.pdf
-97,2024-06-30,Ertis,VKO,Nitrates,4.161004,45.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-98,2024-06-30,Ertis,VKO,Oil Products,0.01,0.05,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-99,2024-06-30,Ertis,VKO,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-100,2024-06-30,Ertis,VKO,Sulfates,3150.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-101,2024-06-30,Ertis,VKO,Zinc,0.013,0.01,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
-102,2024-06-30,Ertis,VKO,Zinc,29.79,0.01,False,False,Өскемен су қоймасы,lake,worst_parameter,,Ertis_2024-06.pdf
-103,2024-08-31,Ertis,VKO,Copper,0.0024,0.001,False,False,,,worst_parameter,,Ertis_2024-08.pdf
-104,2024-08-31,Ertis,VKO,Nitrates,4.470866,45.0,False,False,,,worst_parameter,,Ertis_2024-08.pdf
-105,2024-08-31,Ertis,VKO,Oil Products,0.01,0.05,False,False,,,worst_parameter,,Ertis_2024-08.pdf
-106,2024-08-31,Ertis,VKO,Phenols,0.0,0.001,True,False,,,worst_parameter,,Ertis_2024-08.pdf
-107,2024-08-31,Ertis,VKO,Sulfates,1682.0,500.0,False,False,,,worst_parameter,,Ertis_2024-08.pdf
-108,2024-08-31,Ertis,VKO,Zinc,0.0085,0.01,False,False,,,worst_parameter,,Ertis_2024-08.pdf
-109,2024-08-31,Ertis,VKO,Zinc,13.8,0.01,False,False,Өскемен су қоймасы,lake,worst_parameter,,Ertis_2024-08.pdf
-110,2024-09-30,Ertis,VKO,Copper,0.0034,0.001,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-111,2024-09-30,Ertis,VKO,Copper,0.0048,0.001,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-112,2024-09-30,Ertis,VKO,Copper,32.9,0.001,False,True,,,worst_parameter,,Ertis_2024-09.pdf
-113,2024-09-30,Ertis,VKO,Nitrates,8.499072,45.0,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-114,2024-09-30,Ertis,VKO,Nitrates,8.587604,45.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-115,2024-09-30,Ertis,VKO,Oil Products,0.02,0.05,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-116,2024-09-30,Ertis,VKO,Oil Products,0.03,0.05,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-117,2024-09-30,Ertis,VKO,Phenols,0.0,0.001,True,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-118,2024-09-30,Ertis,VKO,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-119,2024-09-30,Ertis,VKO,Sulfates,40.0,500.0,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-120,2024-09-30,Ertis,VKO,Sulfates,1960.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-121,2024-09-30,Ertis,VKO,Zinc,0.0,0.01,True,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
-122,2024-09-30,Ertis,VKO,Zinc,0.0,0.01,True,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
-123,2024-10-31,Ertis,VKO,Copper,0.0021,0.001,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-124,2024-10-31,Ertis,VKO,Nitrates,4.249536,45.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-125,2024-10-31,Ertis,VKO,Oil Products,0.03,0.05,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-126,2024-10-31,Ertis,VKO,Phenols,0.0,0.001,True,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-127,2024-10-31,Ertis,VKO,Sulfates,358.7,500.0,False,False,Еміл өзені,river,worst_parameter,,Ertis_2024-10.pdf
-128,2024-10-31,Ertis,VKO,Sulfates,2156.0,500.0,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-129,2024-10-31,Ertis,VKO,Zinc,0.0,0.01,True,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
-130,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0,0.001,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-131,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-132,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0014,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-133,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0015,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-134,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0017,0.001,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-135,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.002,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-136,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-137,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-138,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-139,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-140,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-141,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.014,0.05,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-142,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-143,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-144,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-145,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-146,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-147,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-148,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,118.0,500.0,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-149,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,237.0,500.0,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-150,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,247.0,500.0,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-151,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,406.0,500.0,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-152,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,897.0,500.0,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-153,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,2282.0,500.0,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-154,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0071,0.01,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-155,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0095,0.01,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-156,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0107,0.01,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-157,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.011,0.01,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-158,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0114,0.01,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-159,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0166,0.01,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
-160,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0006,0.001,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-161,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0023,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-162,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.003,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-163,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0039,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-164,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0042,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-165,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0048,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-166,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-167,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-168,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-169,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-170,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-171,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.049,0.05,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-172,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.0003,0.001,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-173,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-174,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-175,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-176,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-177,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-178,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,165.0,500.0,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-179,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,191.0,500.0,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-180,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,195.0,500.0,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-181,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,310.0,500.0,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-182,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,936.25,500.0,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-183,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,1879.0,500.0,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-184,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-185,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-186,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-187,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-188,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-189,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.003,0.01,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
-190,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0005,0.001,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-191,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.001,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-192,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.001,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-193,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-194,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-195,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0016,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-196,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-197,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-198,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-199,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-200,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-201,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.036,0.05,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-202,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-203,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-204,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-205,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-206,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-207,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-208,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,95.6,500.0,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-209,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,171.0,500.0,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-210,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,181.75,500.0,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-211,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,237.0,500.0,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-212,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,310.0,500.0,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-213,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,2390.0,500.0,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-214,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.005,0.01,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-215,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0064,0.01,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-216,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0107,0.01,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-217,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0108,0.01,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-218,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0194,0.01,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-219,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0209,0.01,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
-220,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0008,0.001,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-221,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0023,0.001,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-222,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0036,0.001,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-223,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0038,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-224,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.004,0.001,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-225,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0047,0.001,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-226,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-227,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-228,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-229,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-230,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-231,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.059,0.05,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-232,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-233,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-234,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-235,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-236,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-237,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-238,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,330.0,500.0,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-239,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,330.0,500.0,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-240,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,349.0,500.0,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-241,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,399.0,500.0,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-242,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,900.0,500.0,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-243,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,1879.0,500.0,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-244,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.005,0.01,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-245,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0064,0.01,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-246,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0069,0.01,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-247,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0072,0.01,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-248,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0083,0.01,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-249,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0091,0.01,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
-250,2024-06-30,Shu-Talas,Zhambyl,Nitrates,1.99197,45.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
-251,2024-06-30,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
-252,2024-06-30,Shu-Talas,Zhambyl,Phenols,0.0,0.001,True,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
-253,2024-06-30,Shu-Talas,Zhambyl,Sulfates,524.0,500.0,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-06.pdf
-254,2024-06-30,Shu-Talas,Zhambyl,Sulfates,682.0,500.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
-255,2024-08-31,Shu-Talas,Zhambyl,Nitrates,2.257566,45.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
-256,2024-08-31,Shu-Talas,Zhambyl,Oil Products,0.05,0.05,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
-257,2024-08-31,Shu-Talas,Zhambyl,Phenols,0.0,0.001,True,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
-258,2024-08-31,Shu-Talas,Zhambyl,Sulfates,735.0,500.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
-259,2024-09-30,Shu-Talas,Zhambyl,Nitrates,0.752522,45.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
-260,2024-09-30,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
-261,2024-09-30,Shu-Talas,Zhambyl,Phenols,0.001,0.001,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
-262,2024-09-30,Shu-Talas,Zhambyl,Sulfates,495.0,500.0,False,False,Тоқташ өзені,river,worst_parameter,,Shu-Talas_2024-09.pdf
-263,2024-09-30,Shu-Talas,Zhambyl,Sulfates,812.0,500.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
-264,2024-10-31,Shu-Talas,Zhambyl,Nitrates,0.752522,45.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
-265,2024-10-31,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,Аса өзені,river,worst_parameter,,Shu-Talas_2024-10.pdf
-266,2024-10-31,Shu-Talas,Zhambyl,Oil Products,0.07,0.05,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
-267,2024-10-31,Shu-Talas,Zhambyl,Phenols,0.001,0.001,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
-268,2024-10-31,Shu-Talas,Zhambyl,Sulfates,841.0,500.0,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
-269,2024-11-30,Shu-Talas,Zhambyl,Sulfates,354.0,500.0,False,False,Тоқташ өзені,river,worst_parameter,,Shu-Talas_2024-11.pdf
-270,2024-12-31,Shu-Talas,Zhambyl,Sulfates,370.0,500.0,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-12.pdf
-271,2024-06-30,Zhaiyk-Kaspian,Atyrau,Copper,0.0,0.001,True,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-272,2024-06-30,Zhaiyk-Kaspian,Atyrau,Nitrates,0.132798,45.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-273,2024-06-30,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-274,2024-06-30,Zhaiyk-Kaspian,Atyrau,Phenols,0.001,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-275,2024-06-30,Zhaiyk-Kaspian,Atyrau,Sulfates,1249.0,500.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-276,2024-06-30,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
-277,2024-08-31,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-278,2024-08-31,Zhaiyk-Kaspian,Atyrau,Nitrates,0.132798,45.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-279,2024-08-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-280,2024-08-31,Zhaiyk-Kaspian,Atyrau,Phenols,0.001,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-281,2024-08-31,Zhaiyk-Kaspian,Atyrau,Sulfates,1411.4,500.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-282,2024-08-31,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
-283,2024-09-30,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-284,2024-09-30,Zhaiyk-Kaspian,Atyrau,Nitrates,0.079679,45.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-285,2024-09-30,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-286,2024-09-30,Zhaiyk-Kaspian,Atyrau,Phenols,0.0003,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-287,2024-09-30,Zhaiyk-Kaspian,Atyrau,Sulfates,1254.6,500.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-288,2024-09-30,Zhaiyk-Kaspian,Atyrau,Zinc,0.001,0.01,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
-289,2024-10-31,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-290,2024-10-31,Zhaiyk-Kaspian,Atyrau,Nitrates,0.141651,45.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-291,2024-10-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-292,2024-10-31,Zhaiyk-Kaspian,Atyrau,Phenols,0.0005,0.001,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-293,2024-10-31,Zhaiyk-Kaspian,Atyrau,Sulfates,1178.3,500.0,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-294,2024-10-31,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
-295,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.24,0.05,False,False,Жайық өзені,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf
-296,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.25,0.05,False,False,Перетаска тарм.,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf
-297,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.29,0.05,False,False,Яик тарм.,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf
+ID,Date,Basin,Region,Pollutant,Concentration,MPC,below_detection,exceeds_plausible,suspected_source_error,water_body,water_body_type,table_type,station,source_bulletin
+1,2024-06-30,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
+2,2024-06-30,Aralo-Syrdarya,Kyzylorda,Nitrates,0.061972,45.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
+3,2024-06-30,Aralo-Syrdarya,Kyzylorda,Oil Products,0.02,0.05,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
+4,2024-06-30,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
+5,2024-06-30,Aralo-Syrdarya,Kyzylorda,Sulfates,256.0,500.0,False,False,False,Сырдария өзені,river,worst_parameter,,Aralo-Syrdarya_2024-06.pdf
+6,2024-06-30,Aralo-Syrdarya,Kyzylorda,Sulfates,312.0,500.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-06.pdf
+7,2024-08-31,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
+8,2024-08-31,Aralo-Syrdarya,Kyzylorda,Nitrates,0.070826,45.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
+9,2024-08-31,Aralo-Syrdarya,Kyzylorda,Oil Products,0.0,0.05,True,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
+10,2024-08-31,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
+11,2024-08-31,Aralo-Syrdarya,Kyzylorda,Sulfates,240.0,500.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-08.pdf
+12,2024-09-30,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
+13,2024-09-30,Aralo-Syrdarya,Kyzylorda,Nitrates,0.354128,45.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
+14,2024-09-30,Aralo-Syrdarya,Kyzylorda,Oil Products,0.003,0.05,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
+15,2024-09-30,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
+16,2024-09-30,Aralo-Syrdarya,Kyzylorda,Sulfates,300.0,500.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-09.pdf
+17,2024-10-31,Aralo-Syrdarya,Kyzylorda,Copper,0.003,0.001,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
+18,2024-10-31,Aralo-Syrdarya,Kyzylorda,Nitrates,0.088532,45.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
+19,2024-10-31,Aralo-Syrdarya,Kyzylorda,Oil Products,0.003,0.05,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
+20,2024-10-31,Aralo-Syrdarya,Kyzylorda,Phenols,0.0,0.001,True,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
+21,2024-10-31,Aralo-Syrdarya,Kyzylorda,Sulfates,270.0,500.0,False,False,False,Сырдария өзені,river,worst_parameter,,Aralo-Syrdarya_2024-10.pdf
+22,2024-10-31,Aralo-Syrdarya,Kyzylorda,Sulfates,336.0,500.0,False,False,False,Арал теңізі,lake,full_panel,,Aralo-Syrdarya_2024-10.pdf
+23,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0027,0.001,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+24,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0037,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+25,2024-06-30,Balkash-Alakol,Almaty,Copper,0.0043,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+26,2024-06-30,Balkash-Alakol,Almaty,Nitrates,0.619724,45.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+27,2024-06-30,Balkash-Alakol,Almaty,Nitrates,1.283714,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+28,2024-06-30,Balkash-Alakol,Almaty,Nitrates,1.814906,45.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+29,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+30,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+31,2024-06-30,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+32,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+33,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+34,2024-06-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+35,2024-06-30,Balkash-Alakol,Almaty,Sulfates,14.0,500.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+36,2024-06-30,Balkash-Alakol,Almaty,Sulfates,2353.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+37,2024-06-30,Balkash-Alakol,Almaty,Sulfates,2734.333,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+38,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.0021,0.01,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+39,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.003,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+40,2024-06-30,Balkash-Alakol,Almaty,Zinc,0.0039,0.01,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-06.pdf
+41,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0006,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+42,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0009,0.001,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+43,2024-08-31,Balkash-Alakol,Almaty,Copper,0.0016,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+44,2024-08-31,Balkash-Alakol,Almaty,Nitrates,0.66399,45.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+45,2024-08-31,Balkash-Alakol,Almaty,Nitrates,1.593576,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+46,2024-08-31,Balkash-Alakol,Almaty,Nitrates,4.4266,45.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+47,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+48,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+49,2024-08-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+50,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+51,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+52,2024-08-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+53,2024-08-31,Balkash-Alakol,Almaty,Sulfates,8.0,500.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+54,2024-08-31,Balkash-Alakol,Almaty,Sulfates,2300.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+55,2024-08-31,Balkash-Alakol,Almaty,Sulfates,2556.667,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+56,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.0005,0.01,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+57,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.0007,0.01,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+58,2024-08-31,Balkash-Alakol,Almaty,Zinc,0.001,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-08.pdf
+59,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0009,0.001,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+60,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0021,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+61,2024-09-30,Balkash-Alakol,Almaty,Copper,0.0021,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+62,2024-09-30,Balkash-Alakol,Almaty,Nitrates,1.416512,45.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+63,2024-09-30,Balkash-Alakol,Almaty,Nitrates,1.859172,45.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+64,2024-09-30,Balkash-Alakol,Almaty,Nitrates,3.054354,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+65,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+66,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+67,2024-09-30,Balkash-Alakol,Almaty,Oil Products,0.04,0.05,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+68,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+69,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+70,2024-09-30,Balkash-Alakol,Almaty,Phenols,0.0003,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+71,2024-09-30,Balkash-Alakol,Almaty,Sulfates,10.0,500.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+72,2024-09-30,Balkash-Alakol,Almaty,Sulfates,2056.667,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+73,2024-09-30,Balkash-Alakol,Almaty,Sulfates,2270.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+74,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.0008,0.01,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+75,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.0016,0.01,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+76,2024-09-30,Balkash-Alakol,Almaty,Zinc,0.002,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-09.pdf
+77,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0006,0.001,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+78,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0024,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+79,2024-10-31,Balkash-Alakol,Almaty,Copper,0.0026,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+80,2024-10-31,Balkash-Alakol,Almaty,Nitrates,0.01505,45.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+81,2024-10-31,Balkash-Alakol,Almaty,Nitrates,1.505044,45.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+82,2024-10-31,Balkash-Alakol,Almaty,Nitrates,3.628041,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+83,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.0,0.05,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+84,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+85,2024-10-31,Balkash-Alakol,Almaty,Oil Products,0.01,0.05,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+86,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+87,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+88,2024-10-31,Balkash-Alakol,Almaty,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+89,2024-10-31,Balkash-Alakol,Almaty,Sulfates,12.0,500.0,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+90,2024-10-31,Balkash-Alakol,Almaty,Sulfates,349.0,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+91,2024-10-31,Balkash-Alakol,Almaty,Sulfates,2200.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+92,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.0005,0.01,False,False,False,Үлкен Алматы көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+93,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.0019,0.01,False,False,False,Алакөл көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+94,2024-10-31,Balkash-Alakol,Almaty,Zinc,0.002,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Balkash-Alakol_2024-10.pdf
+95,2024-06-30,Ertis,VKO,Copper,0.0035,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+96,2024-06-30,Ertis,VKO,Copper,9.04,0.001,False,False,False,Арасан өзені,river,worst_parameter,,Ertis_2024-06.pdf
+97,2024-06-30,Ertis,VKO,Nitrates,4.161004,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+98,2024-06-30,Ertis,VKO,Oil Products,0.01,0.05,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+99,2024-06-30,Ertis,VKO,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+100,2024-06-30,Ertis,VKO,Sulfates,3150.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+101,2024-06-30,Ertis,VKO,Zinc,0.013,0.01,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-06.pdf
+102,2024-06-30,Ertis,VKO,Zinc,29.79,0.01,False,False,False,Арасан өзені,river,worst_parameter,,Ertis_2024-06.pdf
+103,2024-08-31,Ertis,VKO,Copper,0.0024,0.001,False,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+104,2024-08-31,Ertis,VKO,Nitrates,4.470866,45.0,False,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+105,2024-08-31,Ertis,VKO,Oil Products,0.01,0.05,False,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+106,2024-08-31,Ertis,VKO,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+107,2024-08-31,Ertis,VKO,Sulfates,1682.0,500.0,False,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+108,2024-08-31,Ertis,VKO,Zinc,0.0085,0.01,False,False,False,Алакөл көлі,lake,worst_parameter,,Ertis_2024-08.pdf
+109,2024-08-31,Ertis,VKO,Zinc,13.8,0.01,False,False,False,Арасан өзені,river,worst_parameter,,Ertis_2024-08.pdf
+110,2024-09-30,Ertis,VKO,Copper,0.0034,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+111,2024-09-30,Ertis,VKO,Copper,0.0048,0.001,False,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+112,2024-09-30,Ertis,VKO,Copper,32.9,0.001,False,True,False,Арасан өзені,river,worst_parameter,,Ertis_2024-09.pdf
+113,2024-09-30,Ertis,VKO,Nitrates,8.499072,45.0,False,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+114,2024-09-30,Ertis,VKO,Nitrates,8.587604,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+115,2024-09-30,Ertis,VKO,Oil Products,0.02,0.05,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+116,2024-09-30,Ertis,VKO,Oil Products,0.03,0.05,False,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+117,2024-09-30,Ertis,VKO,Phenols,0.0,0.001,True,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+118,2024-09-30,Ertis,VKO,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+119,2024-09-30,Ertis,VKO,Sulfates,40.0,500.0,False,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+120,2024-09-30,Ertis,VKO,Sulfates,1960.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+121,2024-09-30,Ertis,VKO,Zinc,0.0,0.01,True,False,False,Зайсан көлі,lake,full_panel,,Ertis_2024-09.pdf
+122,2024-09-30,Ertis,VKO,Zinc,0.0,0.01,True,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-09.pdf
+123,2024-10-31,Ertis,VKO,Copper,0.0021,0.001,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+124,2024-10-31,Ertis,VKO,Nitrates,4.249536,45.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+125,2024-10-31,Ertis,VKO,Oil Products,0.03,0.05,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+126,2024-10-31,Ertis,VKO,Phenols,0.0,0.001,True,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+127,2024-10-31,Ertis,VKO,Sulfates,358.7,500.0,False,False,False,Еміл өзені,river,worst_parameter,,Ertis_2024-10.pdf
+128,2024-10-31,Ertis,VKO,Sulfates,2156.0,500.0,False,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+129,2024-10-31,Ertis,VKO,Zinc,0.0,0.01,True,False,False,Алакөл көлі,lake,full_panel,,Ertis_2024-10.pdf
+130,2024-12-31,Ertis,VKO,Zinc,1.11,0.01,False,False,False,Красноярка өз.,river,worst_parameter,,Ertis_2024-12.pdf
+131,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0,0.001,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+132,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+133,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0014,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+134,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0015,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+135,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.0017,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+136,2024-06-30,Nura-Sarysu,Karaganda,Copper,0.002,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+137,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+138,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+139,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+140,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+141,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+142,2024-06-30,Nura-Sarysu,Karaganda,Oil Products,0.014,0.05,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+143,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+144,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+145,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+146,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+147,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+148,2024-06-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+149,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,118.0,500.0,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+150,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,237.0,500.0,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+151,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,247.0,500.0,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+152,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,406.0,500.0,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+153,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,897.0,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+154,2024-06-30,Nura-Sarysu,Karaganda,Sulfates,2282.0,500.0,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+155,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0071,0.01,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+156,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0095,0.01,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+157,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0107,0.01,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+158,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.011,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+159,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0114,0.01,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+160,2024-06-30,Nura-Sarysu,Karaganda,Zinc,0.0166,0.01,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-06.pdf
+161,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0006,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+162,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0023,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+163,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.003,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+164,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0039,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+165,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0042,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+166,2024-08-31,Nura-Sarysu,Karaganda,Copper,0.0048,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+167,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+168,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+169,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+170,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+171,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+172,2024-08-31,Nura-Sarysu,Karaganda,Oil Products,0.049,0.05,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+173,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.0003,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+174,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+175,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+176,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+177,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+178,2024-08-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+179,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,165.0,500.0,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+180,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,191.0,500.0,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+181,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,195.0,500.0,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+182,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,310.0,500.0,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+183,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,936.25,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+184,2024-08-31,Nura-Sarysu,Karaganda,Sulfates,1879.0,500.0,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+185,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+186,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+187,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+188,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+189,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.0,0.01,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+190,2024-08-31,Nura-Sarysu,Karaganda,Zinc,0.003,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-08.pdf
+191,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0005,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+192,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.001,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+193,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.001,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+194,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+195,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0011,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+196,2024-09-30,Nura-Sarysu,Karaganda,Copper,0.0016,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+197,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+198,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+199,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.0,0.05,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+200,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+201,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.01,0.05,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+202,2024-09-30,Nura-Sarysu,Karaganda,Oil Products,0.036,0.05,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+203,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+204,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+205,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+206,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+207,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+208,2024-09-30,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+209,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,95.6,500.0,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+210,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,171.0,500.0,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+211,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,181.75,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+212,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,237.0,500.0,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+213,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,310.0,500.0,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+214,2024-09-30,Nura-Sarysu,Karaganda,Sulfates,2390.0,500.0,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+215,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.005,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+216,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0064,0.01,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+217,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0107,0.01,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+218,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0108,0.01,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+219,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0194,0.01,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+220,2024-09-30,Nura-Sarysu,Karaganda,Zinc,0.0209,0.01,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-09.pdf
+221,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0008,0.001,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+222,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0023,0.001,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+223,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0036,0.001,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+224,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0038,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+225,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.004,0.001,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+226,2024-10-31,Nura-Sarysu,Karaganda,Copper,0.0047,0.001,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+227,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+228,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+229,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+230,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+231,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.02,0.05,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+232,2024-10-31,Nura-Sarysu,Karaganda,Oil Products,0.059,0.05,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+233,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+234,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+235,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+236,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+237,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.0,0.001,True,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+238,2024-10-31,Nura-Sarysu,Karaganda,Phenols,0.001,0.001,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+239,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,330.0,500.0,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+240,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,330.0,500.0,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+241,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,349.0,500.0,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+242,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,399.0,500.0,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+243,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,900.0,500.0,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+244,2024-10-31,Nura-Sarysu,Karaganda,Sulfates,1879.0,500.0,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+245,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.005,0.01,False,False,False,Балқаш көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+246,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0064,0.01,False,False,False,Қоқай көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+247,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0069,0.01,False,False,False,Теңіз көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+248,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0072,0.01,False,False,False,Сұлтанкелді көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+249,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0083,0.01,False,False,False,Шолақ көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+250,2024-10-31,Nura-Sarysu,Karaganda,Zinc,0.0091,0.01,False,False,False,Есей көлі,lake,full_panel,,Nura-Sarysu_2024-10.pdf
+251,2024-06-30,Shu-Talas,Zhambyl,Nitrates,1.99197,45.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
+252,2024-06-30,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
+253,2024-06-30,Shu-Talas,Zhambyl,Phenols,0.0,0.001,True,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
+254,2024-06-30,Shu-Talas,Zhambyl,Sulfates,524.0,500.0,False,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-06.pdf
+255,2024-06-30,Shu-Talas,Zhambyl,Sulfates,682.0,500.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-06.pdf
+256,2024-08-31,Shu-Talas,Zhambyl,Nitrates,2.257566,45.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
+257,2024-08-31,Shu-Talas,Zhambyl,Oil Products,0.05,0.05,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
+258,2024-08-31,Shu-Talas,Zhambyl,Phenols,0.0,0.001,True,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
+259,2024-08-31,Shu-Talas,Zhambyl,Sulfates,735.0,500.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-08.pdf
+260,2024-08-31,Shu-Talas,Zhambyl,Sulfates,970.0,500.0,False,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-08.pdf
+261,2024-09-30,Shu-Talas,Zhambyl,Nitrates,0.752522,45.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
+262,2024-09-30,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
+263,2024-09-30,Shu-Talas,Zhambyl,Phenols,0.001,0.001,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
+264,2024-09-30,Shu-Talas,Zhambyl,Sulfates,495.0,500.0,False,False,False,Тоқташ өзені,river,worst_parameter,,Shu-Talas_2024-09.pdf
+265,2024-09-30,Shu-Talas,Zhambyl,Sulfates,812.0,500.0,False,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-09.pdf
+266,2024-09-30,Shu-Talas,Zhambyl,Sulfates,812.0,500.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-09.pdf
+267,2024-10-31,Shu-Talas,Zhambyl,Nitrates,0.752522,45.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
+268,2024-10-31,Shu-Talas,Zhambyl,Oil Products,0.06,0.05,False,False,False,Аса өзені,river,worst_parameter,,Shu-Talas_2024-10.pdf
+269,2024-10-31,Shu-Talas,Zhambyl,Oil Products,0.07,0.05,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
+270,2024-10-31,Shu-Talas,Zhambyl,Phenols,0.001,0.001,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
+271,2024-10-31,Shu-Talas,Zhambyl,Sulfates,797.0,500.0,False,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-10.pdf
+272,2024-10-31,Shu-Talas,Zhambyl,Sulfates,841.0,500.0,False,False,False,Билікөл көлі,lake,full_panel,,Shu-Talas_2024-10.pdf
+273,2024-11-30,Shu-Talas,Zhambyl,Sulfates,354.0,500.0,False,False,False,Тоқташ өзені,river,worst_parameter,,Shu-Talas_2024-11.pdf
+274,2024-12-31,Shu-Talas,Zhambyl,Sulfates,370.0,500.0,False,False,False,Қарабалта өзені,river,worst_parameter,,Shu-Talas_2024-12.pdf
+275,2024-06-30,Zhaiyk-Kaspian,Atyrau,Copper,0.0,0.001,True,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+276,2024-06-30,Zhaiyk-Kaspian,Atyrau,Nitrates,0.132798,45.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+277,2024-06-30,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+278,2024-06-30,Zhaiyk-Kaspian,Atyrau,Phenols,0.001,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+279,2024-06-30,Zhaiyk-Kaspian,Atyrau,Sulfates,1249.0,500.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+280,2024-06-30,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-06.pdf
+281,2024-08-31,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+282,2024-08-31,Zhaiyk-Kaspian,Atyrau,Nitrates,0.132798,45.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+283,2024-08-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+284,2024-08-31,Zhaiyk-Kaspian,Atyrau,Phenols,0.001,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+285,2024-08-31,Zhaiyk-Kaspian,Atyrau,Sulfates,1411.4,500.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+286,2024-08-31,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-08.pdf
+287,2024-09-30,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+288,2024-09-30,Zhaiyk-Kaspian,Atyrau,Nitrates,0.079679,45.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+289,2024-09-30,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+290,2024-09-30,Zhaiyk-Kaspian,Atyrau,Phenols,0.0003,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+291,2024-09-30,Zhaiyk-Kaspian,Atyrau,Sulfates,1254.6,500.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+292,2024-09-30,Zhaiyk-Kaspian,Atyrau,Zinc,0.001,0.01,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-09.pdf
+293,2024-10-31,Zhaiyk-Kaspian,Atyrau,Copper,0.001,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+294,2024-10-31,Zhaiyk-Kaspian,Atyrau,Nitrates,0.141651,45.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+295,2024-10-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.02,0.05,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+296,2024-10-31,Zhaiyk-Kaspian,Atyrau,Phenols,0.0005,0.001,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+297,2024-10-31,Zhaiyk-Kaspian,Atyrau,Sulfates,1178.3,500.0,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+298,2024-10-31,Zhaiyk-Kaspian,Atyrau,Zinc,0.002,0.01,False,False,False,Солтүстік Каспий,lake,full_panel,,Zhaiyk-Kaspian_2024-10.pdf
+299,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.24,0.05,False,False,False,Жайық өзені,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf
+300,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.25,0.05,False,False,False,Перетаска тарм.,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf
+301,2024-12-31,Zhaiyk-Kaspian,Atyrau,Oil Products,0.29,0.05,False,False,False,Яик тарм.,river,worst_parameter,,Zhaiyk-Kaspian_2024-12.pdf

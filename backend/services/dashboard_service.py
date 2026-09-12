@@ -229,6 +229,17 @@ class DashboardService:
         if rivers.empty or "water_body" not in rivers.columns or "Pollutant" not in rivers.columns:
             return []
         rivers = rivers[rivers["water_body"].fillna("") != ""].copy()
+        if "suspected_source_error" in rivers.columns:
+            # A reading flagged as probably transposed in the source PDF
+            # itself (see data/kazhydromet_bulletin_etl.py
+            # SUSPECTED_SOURCE_ERRORS) is kept in the dataset unmodified,
+            # but must not read as a real spike here. The master CSV mixes
+            # this column's True/False with NaN (rows from other sources
+            # never set it), which reads back as an `object` dtype of
+            # NaN/bool — cast to a clean bool before negating so `~` is a
+            # real boolean NOT, not Python's bitwise invert on `object`.
+            flagged = rivers["suspected_source_error"].fillna(False).astype(bool)
+            rivers = rivers[~flagged]
         if rivers.empty:
             return []
         rivers["_month"] = pd.to_datetime(rivers["Date"], errors="coerce").dt.to_period("M")

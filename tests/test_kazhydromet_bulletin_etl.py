@@ -180,3 +180,128 @@ def test_table_type_recorded_for_worst_parameter_row(tmp_path):
     rows = _rows_by_pollutant(_process_bulletin(path), "Zinc")
     assert len(rows) == 1
     assert rows[0]["table_type"] == "worst_parameter"
+
+
+def test_class_label_block_boundary_balkash_alakol(tmp_path):
+    """Balkash-Alakol_2025-01.pdf p.13: 'Кесте' blocks here inline the class
+    label on the SAME line as the name ("Іле өзені - 3 класс ..."), with
+    every following line up to the NEXT such name+label line belonging to
+    the same block regardless of how many untracked parameters come first.
+    Іле's Copper sits 4 lines after its own name+label line; Баянкөл's sits
+    after a name-only continuation split by an "мг/дм 3" unit typo."""
+    body = (
+        "   Іле өзені         -         3 класс    Магний         мг/дм3\n"
+        "                              (орташа                                  25,3\n"
+        "                             ластанған)   Аммоний ионы   мг/дм3       0,558\n"
+        "                                          Сульфаттар     мг/дм3       105,1\n"
+        "                                          Мыс            мг/дм3      0,00205\n"
+        "   Баянкөл өзені     -         3 класс    Жалпы фосфор   мг/дм   3\n"
+        "                                                                      0,304\n"
+        "                              (орташа\n"
+        "                             ластанған)   Мыс            мг/дм3       0,0014\n"
+    )
+    path = _write_bulletin(tmp_path, "Balkash-Alakol_2025-01", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    by_wb = {r["water_body"]: r["Concentration"] for r in rows}
+    assert by_wb.get("Іле өзені") == 0.00205
+    assert by_wb.get("Баянкөл өзені") == 0.0014
+
+
+def test_suspected_source_error_flagged_not_corrected(tmp_path):
+    """Balkash-Alakol_2025-01.pdf p.13: Темірлік өзені's phosphorus
+    (0,0024 — ~100x lower than every other river that month) and copper
+    (0,254 — ~100x higher than every other river) read as though transposed
+    in the source PDF itself. The value is kept as printed and flagged, not
+    corrected; the block ends at Лепсі's own name+label line, so Лепсі must
+    NOT receive this value (the bug this replaced: nearest-line attribution
+    wrongly gave Лепсі the 0,254 reading)."""
+    body = (
+        "   Темірлік өзені    -         3 класс    Магний         мг/дм3         27\n"
+        "                              (орташа     Жалпы фосфор   мг/дм3       0,0024\n"
+        "                             ластанған)\n"
+        "                                          Мыс            мг/дм3        0,254\n"
+        "   Лепсі өзені       -         3 класс    Жалпы фосфор   мг/дм3        0,231\n"
+        "                              (орташа     Аммоний ионы   мг/дм3\n"
+        "                             ластанған)                                0,51\n"
+    )
+    path = _write_bulletin(tmp_path, "Balkash-Alakol_2025-01", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    by_wb = {r["water_body"]: r for r in rows}
+    assert by_wb["Темірлік өзені"]["Concentration"] == 0.254
+    assert by_wb["Темірлік өзені"]["suspected_source_error"] is True
+    assert "Лепсі өзені" not in by_wb
+
+
+def test_value_on_next_line_when_missing_from_term_line(tmp_path):
+    """Balkash-Alakol_2025-01.pdf p.13: 'Мыс   мг/дм3' ends the line with no
+    number — the value is the last token of the FOLLOWING line instead
+    ("0,0011", after the "(орташа" continuation text)."""
+    body = (
+        "   Түрген өзені      -         3 класс    Мыс            мг/дм3\n"
+        "                              (орташа                                 0,0011\n"
+        "                             ластанған)\n"
+    )
+    path = _write_bulletin(tmp_path, "Balkash-Alakol_2025-01", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    assert len(rows) == 1
+    assert rows[0]["water_body"] == "Түрген өзені"
+    assert rows[0]["Concentration"] == 0.0011
+
+
+def _burabay_table(ph_values: list[str], hardness_values: list[str],
+                    mineralization_values: list[str], copper_values: list[str]) -> str:
+    """Build a synthetic repeated-classifier-prefix 'Ингредиенттер атауы'
+    table (Esil_2025-07.pdf's Burabay-lakes format: 'Көл Копа  Көл Зеренді
+    Көл Бурабай' instead of a suffix per name) with 3 lake columns at fixed
+    x-positions, for testing the per-table pH/mineralization/hardness/copper
+    plausibility check that decides whether to include or exclude it."""
+    cols = [40, 52, 64]
+
+    def row(label: str, values: list[str]) -> str:
+        chars = list(" " * 80)
+        chars[0:len(label)] = label
+        for pos, val in zip(cols, values):
+            chars[pos:pos + len(val)] = val
+        return "".join(chars).rstrip() + "\n"
+
+    lines = [
+        "№  Ингредиенттер атауы  Өлшем бірліктер\n",
+        row("", ["Көл", "Көл", "Көл"]),
+        row("", ["Копа", "Зеренді", "Бурабай"]),
+        "1   Көрнекі бақылаулар\n",
+        row("3  Сутектік көрсеткіш  мг/дм3", ph_values),
+        row("9  Кермектік  ммоль/дм3", hardness_values),
+        row("10 Минерализация  мг/дм3", mineralization_values),
+        row("22 Мыс  мг/дм3", copper_values),
+    ]
+    return "".join(lines)
+
+
+def test_repeated_prefix_burabay_table_included_when_plausible(tmp_path):
+    body = _burabay_table(
+        ph_values=["6,8", "5,7", "6,4"],
+        hardness_values=["5,5", "5,7", "2,1"],
+        mineralization_values=["614", "794", "195"],
+        copper_values=["0,002", "0,0002", "0,0005"],
+    )
+    path = _write_bulletin(tmp_path, "Esil_2025-07", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    by_wb = {r["water_body"]: r["Concentration"] for r in rows}
+    assert by_wb.get("Копа көлі") == 0.002
+    assert by_wb.get("Зеренді көлі") == 0.0002
+    assert by_wb.get("Бурабай көлі") == 0.0005
+
+
+def test_repeated_prefix_table_excluded_when_ph_implausible(tmp_path):
+    """Esil_2024-06.pdf found a real case of this: a row-shift left a
+    hardness- or BOD-scale value under the pH label. A table instance where
+    ANY column's checks fail is excluded whole, not just that column."""
+    body = _burabay_table(
+        ph_values=["6,8", "25,0", "6,4"],  # column 2 implausible (row-shift-like)
+        hardness_values=["5,5", "5,7", "2,1"],
+        mineralization_values=["614", "794", "195"],
+        copper_values=["0,002", "0,0002", "0,0005"],
+    )
+    path = _write_bulletin(tmp_path, "Esil_2024-06", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    assert rows == []

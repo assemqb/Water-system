@@ -95,21 +95,22 @@ Detailed diagrams and API flows: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## 6. Dataset
 
-**Master file:** `db/kazakhstan_water_master.csv` (~53,212 rows)
+**Master file:** `db/kazakhstan_water_master.csv` (~53,595 rows)
 
 | Source label | Rows (approx.) | Description |
 |--------------|----------------|-------------|
 | `observed` | 48,798 | Kazhydromet water-level observations (8 river basins) |
-| `observed_chemical` | 1,138 | Real chemical pollution measurements extracted from official Kazhydromet monthly environmental bulletins (842 for 2025 — 11 of 12 months, all 8 basins; 296 for 2024 — the 6 months with full 8-basin coverage: Jun, Aug–Dec) |
+| `observed_chemical` | 1,521 | Real chemical pollution measurements extracted from official Kazhydromet monthly environmental bulletins (1,220 for 2025 — 11 of 12 months, all 8 basins; 301 for 2024 — the 6 months with full 8-basin coverage: Jun, Aug–Dec) |
 | `reference` | 3,276 | Kaggle water potability (methodological comparison only) |
 
 **Real chemical data:** `db/kazhydromet_real_pollution_2025.csv` and `db/kazhydromet_real_pollution_2024.csv` — extracted by `data/kazhydromet_bulletin_etl.py` from the PDF bulletins Kazhydromet's oblast branches publish monthly ("Информационный бюллетень о состоянии окружающей среды"), each including a hydrochemical table of measured pollutant concentrations for surface water objects. Six pollutants with a defined MPC are extracted: Nitrates, Copper, Sulfates, Zinc, Phenols, Oil Products (see section 7 for which standard each MPC comes from). Every row carries:
 
 - `source_bulletin` — the exact source PDF filename, for traceability (full URL manifests: `ollama/kazhydromet_bulletin_manifest_2025.json`, `..._2024.json`)
-- `water_body` / `water_body_type` (`river` or `lake`) — which specific river, lake, reservoir, or sea point the reading is from, when the source table's layout allows it to be determined (~97% of rows for both years). Names split across lines by column wrapping (e.g. "Глубочанка" / value row / "өзені") are recombined; a curated spelling/abbreviation map (`CANONICAL_NAMES`) unifies variants of the same water body (e.g. "Балкаш көлі" → "Балқаш көлі", "Еміл өз." → "Еміл өзені") so the same river isn't split across two names in any per-water-body statistic. One table layout (a repeated-classifier-prefix header, e.g. "Көл Копа Көл Зеренді ...") was found, on inspection, to also have a genuine row-level shift in the source PDF (hardness/mineralization swapped) — rows from that layout are excluded entirely rather than risk a wrong concentration, not just a wrong water body. A cell where several parameter names are stacked around a single value (pdftotext linearizing a visually-stacked block) is also skipped rather than guessed at.
+- `water_body` / `water_body_type` (`river` or `lake`) — which specific river, lake, reservoir, or sea point the reading is from, when the source table's layout allows it to be determined (98.4% of 2025 rows, 100% of 2024 rows). For "Кесте"/worst_parameter tables, a value's water body is resolved by finding the class-exceedance label ("N – сынып"/"N класс") that starts its block — a value belongs to the last such block whose name starts at or before it, never to a name that merely sits nearby by raw line count (see [Round 3](#round-3--class-label-block-boundaries-suspected_source_error-recovered-burabay-tables) below for why line-distance alone gets this wrong). Names split across lines by column wrapping (e.g. "Глубочанка" / value row / "өзені") are recombined; a curated spelling/abbreviation map (`CANONICAL_NAMES`) unifies variants of the same water body (e.g. "Балкаш көлі" → "Балқаш көлі", "Еміл өз." → "Еміл өзені") so the same river isn't split across two names in any per-water-body statistic. A repeated-classifier-prefix header table (e.g. "Көл Копа Көл Зеренді ...") is recovered by anchoring columns on the classifier tokens' positions and validated per table instance (pH 4–10, mineralization > hardness, copper < 0.05 mg/dm³ in every column) before being trusted — an instance that fails any check is excluded and logged rather than risk a wrong concentration. A cell where several parameter names are stacked around a single value (pdftotext linearizing a visually-stacked block) is also skipped rather than guessed at.
 - `table_type` (`full_panel` or `worst_parameter`) — which of the two source layouts the reading came from; see the dedicated section below.
 - `below_detection` — `True` when the bulletin reported `0`; kept as a real, meaningful zero rather than dropped as if no reading existed (Ratio/WQI both compute to 0 = Safe, correctly).
 - `exceeds_plausible` — `True` when the concentration is above the generous `PLAUSIBLE_MAX` ceiling (data/kazhydromet_bulletin_etl.py); flagged rather than dropped (see section 22 — the one row this has ever caught in the full corpus was manually confirmed as a real reading, not a PDF artifact).
+- `suspected_source_error` — `True` for one specific reading (Balkash-Alakol_2025-01.pdf, Темірлік өзені, Copper) that manual cross-checking found almost certainly transposed with its neighboring phosphorus reading *in the source PDF itself* — see [Round 3](#round-3--class-label-block-boundaries-suspected_source_error-recovered-burabay-tables). The value is kept exactly as printed (never corrected) and excluded only from `exceedance_catalog()`, so a probable data-entry error upstream doesn't read as a real contamination spike.
 - `station` — present in the schema for a numbered monitoring-post code, but these bulletins organize hydrochemical readings by water-body name/location description rather than a numeric post code (unlike the separate water-level hydrological posts in `STATION_MAP`), so it is empty for this data source.
 
 **River/lake split in analytics (L7):** naturally saline lakes (Alakol, Balkhash, Tengiz/Northern Caspian) show Sulfates ratios of natural mineralization, not pollution, and blending them into a regional pollution ranking misrepresents lake-adjacent regions. `analytics/water_body.py` provides `exclude_lakes`/`only_lakes`; the dashboard's KPIs, regional facts/insights, the chat analyst's grounding context, and the map's per-region stats all default to rivers (`exclude_lakes`) and expose a parallel lake-only view (`kpi_lakes`, `lake_facts`, `region_stats_lakes` in the `/api/dashboard/summary` response) shown as a separate panel in the frontend rather than merged into the main numbers.
@@ -122,8 +123,8 @@ Because the river-default `kpi()` is necessarily worst_parameter data, it **omit
 
 |  | full_panel | worst_parameter |
 |---|---:|---:|
-| river | 0 | 411 |
-| lake | 679 | 15 |
+| river | 0 | 450 |
+| lake | 1,032 | 20 |
 
 Consequently `kpi()` (the river-default main view) is **not** also restricted to full_panel — doing so would return zero records, since rivers ∩ full_panel is empty. River statistics are necessarily built from worst_parameter data; this is disclosed (L8) rather than hidden. `kpi_full_panel()`/`kpi_worst_parameter()` split on table_type across both rivers and lakes together (not lake-excluded) — that is where the distinction is actually meaningful: full_panel medians run close to the MPC line (representative sampling, mostly lakes), worst_parameter means run into the thousands (exceedance-biased by construction, mostly rivers) — verified on the live data, not a hypothetical.
 
@@ -135,7 +136,7 @@ Consequently `kpi()` (the river-default main view) is **not** also restricted to
 
 ### Key columns
 
-`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`, `water_body`, `water_body_type`, `table_type`, `below_detection`, `exceeds_plausible`
+`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`, `water_body`, `water_body_type`, `table_type`, `below_detection`, `exceeds_plausible`, `suspected_source_error`
 
 ---
 
@@ -519,30 +520,22 @@ Documented in `config/settings.py` (L1–L8):
 7. **L7:** Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not pollution — check `water_body_type` before reading a high Sulfates ratio there as a pollution signal
 8. **L8:** `table_type` and `water_body_type` are not independent — Kazhydromet reports lakes/seas via the comprehensive panel and rivers via the worst-exceeding-parameter table almost exclusively (0 river rows are full_panel), so river statistics are necessarily built from the exceedance-biased worst_parameter table; see section 6
 
-### Rows excluded for the repeated-prefix table-corruption fix (L2)
+### Repeated-prefix table recovery/exclusion (L2)
 
-One source table layout — a repeated classifier prefix per column instead of a suffix per name (e.g. "Көл Копа Көл Зеренді Көл Бурабай ...") — was found, on inspection of Esil_2024-06.pdf, to also have a genuine row-level shift in the source PDF (a blank pH row pushed hardness and mineralization to swap places; the row labeled "Мыс"/Copper showed BOD5-scale magnitudes). `data/kazhydromet_bulletin_etl.py` now skips that layout's values entirely rather than keep a wrong concentration. It affects only the Esil (Akmola) region's bulletins — every other basin is unchanged:
+One source table layout — a repeated classifier prefix per column instead of a suffix per name (e.g. "Көл Копа Көл Зеренді Көл Бурабай ..."), used for the Esil (Akmola) region's lake tables — cannot be column-separated by the normal proximity clustering used elsewhere (adjacent columns sit closer together than a single wrapped 2-word name). It is recovered instead by anchoring each column on the x-position of its own repeated classifier token, then **validated per table instance** before being trusted: every column's pH must fall in 4–10, mineralization must exceed hardness, and copper must be below 0.05 mg/dm³ — the same symptom (a hardness- or BOD-scale value under the pH label) that a real row-shift produced once before (Esil_2024-06.pdf, found during Round 1). An instance that fails is excluded and logged; one that passes is included at full column resolution. This is a change from the previous behavior (blanket-excluding the entire layout), driven by a specific request during Round 3 review not to throw away recoverable data.
 
-| Basin | Year | Before | After | Excluded |
-|---|---|---:|---:|---:|
-| Aralo-Syrdarya | 2024 | 17 | 17 | 0 |
-| Aralo-Syrdarya | 2025 | 35 | 35 | 0 |
-| Balkash-Alakol | 2024 | 55 | 55 | 0 |
-| Balkash-Alakol | 2025 | 187 | 187 | 0 |
-| Ertis | 2024 | 26 | 26 | 0 |
-| Ertis | 2025 | 163 | 163 | 0 |
-| **Esil** | **2024** | **139** | **0** | **139** |
-| **Esil** | **2025** | **247** | **30** | **217** |
-| Nura-Sarysu | 2024 | 93 | 93 | 0 |
-| Nura-Sarysu | 2025 | 176 | 176 | 0 |
-| Shu-Talas | 2024 | 19 | 19 | 0 |
-| Shu-Talas | 2025 | 58 | 58 | 0 |
-| Tobyl-Torgay | 2025 | 35 | 35 | 0 |
-| Zhaiyk-Kaspian | 2024 | 26 | 26 | 0 |
-| Zhaiyk-Kaspian | 2025 | 82 | 82 | 0 |
-| **Total** | | **1,358** | **1,002** | **356** |
+Outcome across the full 2024+2025 corpus (`python3 -m data.kazhydromet_bulletin_etl --year <year>` logs a `WARNING` for every excluded instance):
 
-(Tobyl-Torgay/2024 and Esil/2024 rows below the 2024 full-coverage-month set, or with zero matches for the 6 tracked pollutants that month, are omitted from the table rather than shown as 0/0.) Esil retains 30 rows in 2025 from tables that were NOT the repeated-prefix layout (individual river readings); the 2024 Esil bulletins for the covered months happened to report lakes exclusively via that layout, so its 2024 chemical count is zero.
+| Bulletin | Table (lake group) | Outcome | Reason if excluded |
+|---|---|---|---|
+| Esil_2025-06/07/08/10 | both groups (12 lakes) | ✅ included | — |
+| Esil_2025-05 | Копа/Зеренді/Бурабай/Щучье/Шабақты/Сұлуколь | ✅ included | — |
+| Esil_2025-05 | Карасье/Кіші Шабақты/Майбалық/Қатаркөл/Текекөл/Жүкей | ❌ excluded | page-break column-alignment drift (copper column not resolvable) |
+| Esil_2025-09 | Копа/Зеренді/Бурабай/Щучье/Шабақты/Сұлуколь | ✅ included | — |
+| Esil_2025-09 | Карасье/Кіші Шабақты/Майбалық/Қатаркөл/Текекөл/Жүкей | ❌ excluded | two adjacent columns too narrow to separate (hardness row ambiguous) |
+| Esil_2024-06/08/09/10 | both groups | ❌ excluded | 2024 bulletins label these rows in a Russian-transliterated spelling the pH/mineralization/hardness/copper detectors don't yet match — could not validate, so not trusted |
+
+2024's Esil lake tables remain unrecovered for this reason; documented here rather than silently returning fewer 2024 lake rows than 2025.
 
 ---
 
@@ -573,6 +566,26 @@ The round also surfaced a real *extraction* gap while cross-checking source page
 ### PLAUSIBLE_MAX audit
 
 Before this round, a concentration over `PLAUSIBLE_MAX` was silently dropped (assumed to be a PDF column-misalignment artifact). Auditing every row that ceiling had ever dropped found exactly **one** in the full 2024+2025 corpus: Copper 32.9 mg/dm³ at Ertis_2024-09 — **Кіші Қарақожа өзені** again, the same river already on record with 22.7, 9.04, and 2.27 mg/dm³ Copper in other months (see section 6, exceedance catalog). Manual inspection of the source line confirmed it as a genuine reading, not an artifact — dropping it would have discarded real data about a documented, recurring contamination event. `PLAUSIBLE_MAX` now flags via `exceeds_plausible=True` instead of dropping.
+
+### Round 3 — class-label block boundaries, `suspected_source_error`, recovered Burabay tables
+
+Manual verification requests against `validation_sample_2.csv`'s underlying pages (not the sample rows themselves) found that the Round 1/2 attribution rule — the water body is whichever name is *nearest by raw line count*, checked in both directions — is wrong in principle, not just missing a couple of name shapes. Balkash-Alakol_2025-01.pdf p.13, Темірлік өзені block: Copper 0.254 sits several lines below Темірлік's own name line but only one line above the *next* object's name (Лепсі өзені), so nearest-by-line-count attributed it to Лепсі. Rendering the page as an image and tracing the block boundaries by hand across both this bulletin's format and Ertis's showed the actual rule Kazhydromet's layout follows: **every object's block starts at its class-exceedance label** ("N – сынып" / "N класс" / "N– класс" — always the bare nominative form, never the "сыныпқа"/"класқа" dative form used in narrative summary sentences elsewhere in the same PDF), and a value belongs to whichever label most recently started, not to whichever name is textually closest.
+
+`_scan_class_label_blocks()` replaces the nearest-line scan for worst_parameter attribution: it finds every class-label line, then resolves each block's name by checking the label's own line first (covers "Үлбі өзені 6 – сынып ..." and "Темірлік өзені - 3 класс ..." — name and label share a line), then searching forward — never backward — up to the next label for a name (including the orphaned-name-plus-trailing-suffix shape from Round 1). A value's block is whichever label is nearest *at or before* it. This fixed all 3 Round 1 cases and the newly found ones:
+
+| Bulletin | Reported value | Old (nearest-line) attribution | Correct (class-label block) |
+|---|---|---|---|
+| Balkash-Alakol_2025-01, p.13 | Copper 0.254 | Лепсі өзені | **Темірлік өзені** *(see suspected_source_error below)* |
+| Balkash-Alakol_2025-01, p.13 | Copper 0.00205 | (unattributed) | **Іле өзені** |
+| Balkash-Alakol_2025-01, p.13 | Copper 0.0014 | (unattributed) | **Баянкөл өзені** |
+
+**Value-on-next-line:** the same page also has "Мыс мг/дм3" ending a line with no number at all (Түрген өзені) — the value ("0,0011") is the last token of the *next* line instead. This row was previously dropped silently, not misattributed (`LINE_RE` didn't match at all). Now, when a tracked term's own line has no number, the next 1–2 lines are checked for one, stopping at the next class label.
+
+**`suspected_source_error`:** Темірлік өзені's phosphorus reading (0.0024 mg/dm³) is ~100x lower than every other river's phosphorus that month, while its Copper reading (0.254 mg/dm³) is ~100x higher than every other river's Copper — and each value is exactly the *typical* magnitude for the *other* substance. This reads as the two values being transposed in the bulletin PDF itself, not an extraction bug. Per instruction, **the value is not corrected** — `suspected_source_error=True` is set on this one row (keyed by exact bulletin+water body+pollutant, not a general heuristic, to avoid false positives elsewhere), and `dashboard_service.exceedance_catalog()` excludes flagged rows so a probable upstream data-entry error doesn't surface as a real contamination spike. Темірлік's other months' Copper readings are unaffected and still appear.
+
+**Recovered Burabay/Esil lake tables:** see [Repeated-prefix table recovery/exclusion](#repeated-prefix-table-recoveryexclusion-l2) above — 8 of 12 checked table instances (4 bulletins × 2 lake groups, plus 2 single-group months) were recovered rather than excluded wholesale, adding 12 lakes' full chemical panels (Sulfates, Nitrates, Copper, Zinc, Phenols, Oil Products) across the months they validate. This is the single largest contributor to the row-count increase this round (2025: 846 → 1,220; 2024: 297 → 301).
+
+**`validation_sample_3.csv`** (30 rows, `random.seed(20260913)`, stratified ≥15 from Balkash-Alakol/Ertis worst_parameter "Кесте" blocks and ≥8 from the newly recovered Esil full_panel Burabay tables) is provided for the next round of manual spot-checking against source pages.
 
 ---
 

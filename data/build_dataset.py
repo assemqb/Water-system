@@ -61,6 +61,7 @@ MASTER_COLUMNS = [
     "table_type",
     "below_detection",
     "exceeds_plausible",
+    "suspected_source_error",
 ]
 
 
@@ -150,6 +151,7 @@ def _load_real_pollution() -> pd.DataFrame:
                 "table_type": row.get("table_type") or "",
                 "below_detection": bool(row.get("below_detection", False)),
                 "exceeds_plausible": bool(row.get("exceeds_plausible", False)),
+                "suspected_source_error": bool(row.get("suspected_source_error", False)),
             }
         )
     df = pd.DataFrame(rows)
