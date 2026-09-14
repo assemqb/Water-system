@@ -63,7 +63,7 @@ import subprocess
 from pathlib import Path
 
 from config.logging_config import get_logger
-from config.settings import OLLAMA_DIR, POLLUTANTS
+from config.settings import OLLAMA_DIR, POLLUTANTS, classify_water_quality
 
 logger = get_logger(__name__)
 
@@ -254,6 +254,7 @@ CANONICAL_NAMES = {
     "Секисовка өз.": "Секисовка өзені",
     "Үй өз.": "Үй өзені",
     "Кіші Қарақожа өз.": "Кіші Қарақожа өзені",
+    "Красноярка өз.": "Красноярка өзені",
     "Зеренды көлі": "Зеренді көлі",
 }
 
@@ -307,6 +308,25 @@ def classify_type(name: str) -> str:
     if any(sea in low.split() for sea in SEA_NAMES):
         return "lake"
     return "river"
+
+
+# Order No. 111-НҚ's water quality classes apply to rivers, canals, and
+# CHANNEL (riverbed) reservoirs only — not seas/lakes (see config.settings
+# WATER_QUALITY_CLASSES comment). This differs from LAKE_SUFFIXES/
+# classify_type() above by one entry: "су қоймасы" (reservoir) is grouped
+# with "lake" there for the unrelated natural-mineralization concern (L7),
+# but every reservoir in this dataset (Бұқтырма, Өскемен, Қапшағай, Кеңгір)
+# is a dammed RIVER reservoir, i.e. in scope for the class table.
+WQC_EXCLUDED_SUFFIXES = ("көл.", "көлі", "теңізі", "шығанағы", "бассейні")
+
+
+def is_wqc_eligible(name: str) -> bool:
+    low = name.lower()
+    if any(low.endswith(suf) for suf in WQC_EXCLUDED_SUFFIXES):
+        return False
+    if any(sea in low.split() for sea in SEA_NAMES):
+        return False
+    return True
 
 
 def _strip_junk_words(name: str) -> str:
@@ -843,6 +863,12 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
 
                     suspected_source_error = (stem + ".pdf", wb or "", pollutant) in SUSPECTED_SOURCE_ERRORS
 
+                    # Order No. 111-НҚ classes apply to rivers/canals/channel
+                    # reservoirs only (see is_wqc_eligible) — blank for
+                    # lakes/seas and for rows with no water body resolved at
+                    # all, rather than guessing eligibility.
+                    wqc = classify_water_quality(pollutant, concentration) if wb and is_wqc_eligible(wb) else None
+
                     rows.append(
                         {
                             "Date": date,
@@ -854,6 +880,7 @@ def _process_bulletin(txt_path: Path) -> list[dict]:
                             "below_detection": below_detection,
                             "exceeds_plausible": exceeds_plausible,
                             "suspected_source_error": suspected_source_error,
+                            "water_quality_class": wqc if wqc is not None else "",
                             "water_body": wb or "",
                             "water_body_type": wbt or "",
                             "table_type": "full_panel" if in_ingredient_table else "worst_parameter",
@@ -890,7 +917,7 @@ def write_csv(rows: list[dict], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         "ID", "Date", "Basin", "Region", "Pollutant", "Concentration", "MPC",
-        "below_detection", "exceeds_plausible", "suspected_source_error",
+        "below_detection", "exceeds_plausible", "suspected_source_error", "water_quality_class",
         "water_body", "water_body_type", "table_type", "station", "source_bulletin",
     ]
     with open(out_path, "w", newline="", encoding="utf-8") as f:

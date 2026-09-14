@@ -334,3 +334,45 @@ def test_repeated_prefix_table_excluded_when_ph_implausible(tmp_path):
     path = _write_bulletin(tmp_path, "Esil_2024-06", body)
     rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
     assert rows == []
+
+
+def test_water_quality_class_assigned_for_river(tmp_path):
+    """Order No. 111-НҚ classes apply to rivers — Zinc 0.036 mg/dm3 is
+    within the class-1 bound (<=0.04)."""
+    body = "  Оба өзені                        (өте        мырыш        мг/дм3    0,036\n"
+    path = _write_bulletin(tmp_path, "Ertis_2025-06", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Zinc")
+    assert len(rows) == 1
+    assert rows[0]["water_quality_class"] == 1
+
+
+def test_water_quality_class_blank_for_lake(tmp_path):
+    """The order's own scope note excludes seas and lakes (Balkhash named
+    explicitly) — same Zinc value as the river case above, but no class."""
+    body = "Балқаш көлі                        мырыш        мг/дм3     0,036\n"
+    path = _write_bulletin(tmp_path, "Balkash-Alakol_2025-06", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Zinc")
+    assert len(rows) == 1
+    assert rows[0]["water_body"] == "Балқаш көлі"
+    assert rows[0]["water_quality_class"] == ""
+
+
+def test_water_quality_class_assigned_for_channel_reservoir(tmp_path):
+    """A 'су қоймасы' (reservoir) in this dataset is always a dammed RIVER
+    reservoir (Бұқтырма, Өскемен, Қапшағай, Кеңгір) — in scope for the
+    order's classes even though water_body_type groups it with 'lake' for
+    the unrelated natural-mineralization concern (L7). Copper 0,0011 is
+    within the class-1 bound (<=0.002)."""
+    body = (
+        "    Үржар өзені                                                        мг/дм3     22,7\n"
+        "                                       3 – класс\n"
+        "    Бұқтырма су\n"
+        "                                       (орташа             мыс         мг/дм3    0,0011\n"
+        "      қоймасы\n"
+        "                                      ластанған)\n"
+    )
+    path = _write_bulletin(tmp_path, "Ertis_2025-07", body)
+    rows = _rows_by_pollutant(_process_bulletin(path), "Copper")
+    by_wb = {r["water_body"]: r for r in rows}
+    assert by_wb["Бұқтырма су қоймасы"]["water_body_type"] == "lake"
+    assert by_wb["Бұқтырма су қоймасы"]["water_quality_class"] == 1

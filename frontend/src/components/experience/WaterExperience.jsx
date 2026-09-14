@@ -57,6 +57,8 @@ export function WaterExperience({
   const { t } = useLanguage()
   const kpi = summary?.kpi
   const kpiLakes = summary?.kpi_lakes
+  const classSummary = summary?.river_class_summary
+  const lakeClassNote = summary?.lake_class_note
   const exceedanceCatalog = summary?.exceedance_catalog || []
   const facts = summary?.public_facts || {}
   const insights = Array.isArray(summary?.insights) ? summary.insights.filter(Boolean) : []
@@ -137,7 +139,15 @@ export function WaterExperience({
         onAnalystOpen={onAnalystOpen}
       >
         {!mapSel.geoSelection && (
-          <NationalStatusPanel kpi={kpi} kpiLakes={kpiLakes} facts={facts} nationalStory={stories?.national_status} exceedanceCatalog={exceedanceCatalog} />
+          <NationalStatusPanel
+            kpi={kpi}
+            kpiLakes={kpiLakes}
+            classSummary={classSummary}
+            lakeClassNote={lakeClassNote}
+            facts={facts}
+            nationalStory={stories?.national_status}
+            exceedanceCatalog={exceedanceCatalog}
+          />
         )}
 
         {displayRegion && !mapSel.geoSelection && (
@@ -169,6 +179,9 @@ export function WaterExperience({
           >
             {kpi && (
               <div className="journey-kpi-strip">
+                {classSummary?.worst_class != null && (
+                  <div className="journey-kpi"><span>{t('national.worstClass')}</span><strong>{t('national.classN', { n: classSummary.worst_class })}</strong></div>
+                )}
                 <div className="journey-kpi"><span>{t('national.medianWqi')}</span><strong>{kpi.median_wqi}</strong></div>
                 <div className="journey-kpi"><span>{t('national.meanLabel')}</span><strong>{kpi.mean_wqi}</strong></div>
                 <div className="journey-kpi"><span>{t('national.records')}</span><strong>{kpi.records?.toLocaleString()}</strong></div>

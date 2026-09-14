@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 # ── Project paths ─────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -108,6 +108,112 @@ POLLUTANTS: Dict[str, PollutantSpec] = {
     "Phenols": PollutantSpec(mpc=0.001, hazard_class=2),
     "Oil Products": PollutantSpec(mpc=0.05, hazard_class=3),
 }
+
+# ── Water quality classes: Unified Classification System ─────────────────────
+# Order of the Minister of Water Resources and Irrigation of the Republic of
+# Kazakhstan No. 111-НҚ dated 2025-06-04 ("Об утверждении Единой системы
+# классификации качества воды водных объектов"), in effect from 2025-06-10.
+# Approved for use in this project by the academic advisor, replacing the
+# mixed-MPC-ratio approach above as the PRIMARY water quality assessment for
+# rivers (the MPC ratio / WQI above are kept as a secondary, explicitly
+# labeled figure — see dashboard_service.py).
+#
+# IMPORTANT SCOPE LIMIT, stated in the order's own explanatory note: these
+# classes apply to RIVERS, CANALS, and CHANNEL (riverbed) RESERVOIRS only —
+# NOT to seas or lakes, explicitly naming the Caspian, Aral, and Balkhash.
+# See is_wqc_eligible() in data/kazhydromet_bulletin_etl.py for how that
+# scope is applied to water body names, and README L9.
+#
+# Bulletins report "мыс"/"мырыш"/"ұшқыш фенол" (copper/zinc/phenols) without
+# specifying dissolved vs. total/general form. Per the advisor's guidance,
+# the GENERAL ("общая"/"общий") form's class thresholds and the VOLATILE
+# phenols thresholds are used uniformly — a disclosed methodological choice,
+# not a data error (mirrors the MPC standard-mixing disclosure above).
+#
+# Each bound is the class's UPPER limit in mg/L; a concentration is assigned
+# to the LOWEST-numbered class whose bound it satisfies (class 1 = cleanest).
+# A concentration above every class-5 bound is class 6. `strict=True` means
+# the bound must not be reached (<), otherwise the bound value itself still
+# counts as that class (<=) — only Sulfates class 1 is marked strict ("<100")
+# in the order's own table; every other class boundary, including ones
+# printed as a bare number with no "≤"/"<", is inclusive.
+#
+# Several pollutants repeat the SAME bound across consecutive classes (e.g.
+# Copper classes 1 and 2 both cap at 0.002, Nitrates classes 3-5 all cap at
+# 45): this is not a bug — the official table's classes are jointly defined
+# across many parameters, and a handful of them coincide for any ONE
+# parameter viewed alone. The practical effect: classifying by a single
+# pollutant can never land on some of the mid-range classes for that
+# pollutant (documented in tests/test_water_quality_class.py), matching the
+# source table exactly rather than "smoothing" it into evenly-spaced bins.
+@dataclass(frozen=True)
+class QualityClassBound:
+    """Upper bound for one water quality class (mg/L)."""
+
+    upper: float
+    strict: bool = False  # True = concentration must be < upper (not <=)
+
+
+# Classes 1-5 bounds, in order; anything above class 5's bound is class 6.
+WATER_QUALITY_CLASSES: Dict[str, Tuple[QualityClassBound, ...]] = {
+    "Sulfates": (
+        QualityClassBound(100.0, strict=True),
+        QualityClassBound(100.0),
+        QualityClassBound(500.0),
+        QualityClassBound(600.0),
+        QualityClassBound(1500.0),
+    ),
+    "Nitrates": (
+        QualityClassBound(40.0),
+        QualityClassBound(40.0),
+        QualityClassBound(45.0),
+        QualityClassBound(45.0),
+        QualityClassBound(45.0),
+    ),
+    "Copper": (
+        QualityClassBound(0.002),
+        QualityClassBound(0.002),
+        QualityClassBound(2.0),
+        QualityClassBound(2.0),
+        QualityClassBound(2.4),
+    ),
+    "Zinc": (
+        QualityClassBound(0.04),
+        QualityClassBound(0.04),
+        QualityClassBound(0.04),
+        QualityClassBound(0.12),
+        QualityClassBound(0.20),
+    ),
+    "Phenols": (
+        QualityClassBound(0.001),
+        QualityClassBound(0.001),
+        QualityClassBound(0.001),
+        QualityClassBound(0.002),
+        QualityClassBound(0.005),
+    ),
+    "Oil Products": (
+        QualityClassBound(0.05),
+        QualityClassBound(0.05),
+        QualityClassBound(0.10),
+        QualityClassBound(0.20),
+        QualityClassBound(0.30),
+    ),
+}
+
+
+def classify_water_quality(pollutant: str, concentration: float) -> Optional[int]:
+    """Water quality class (1-6) for one pollutant reading, per
+    WATER_QUALITY_CLASSES. Returns None for a pollutant not covered by the
+    order's table (eligibility by water body type is a separate check —
+    see is_wqc_eligible in data/kazhydromet_bulletin_etl.py)."""
+    bounds = WATER_QUALITY_CLASSES.get(pollutant)
+    if bounds is None or concentration is None:
+        return None
+    for class_number, bound in enumerate(bounds, start=1):
+        satisfied = concentration < bound.upper if bound.strict else concentration <= bound.upper
+        if satisfied:
+            return class_number
+    return 6
 
 # ── Kazhydromet station → basin / region / coordinates (lon, lat WGS84) ───────
 STATION_MAP: Dict[int, Tuple[str, str, str]] = {
@@ -272,6 +378,9 @@ LIMITATIONS = [
     "Kazhydromet reports lakes/seas via the comprehensive panel and rivers via the worst-exceeding-"
     "parameter table almost exclusively, so river statistics are necessarily worst_parameter-based "
     "(a biased, exceedance-only sample); see analytics/table_type.py and README section 6.",
+    "L9: water_quality_class (Order No. 111-НҚ, 2025-06-04) is populated for rivers, canals, and "
+    "channel reservoirs only, per the order's own scope note — it is blank for seas and lakes "
+    "(Caspian, Aral, Balkhash included), where MPC ratio/WQI remain the only quality figures shown.",
 ]
 
 ML_DISCLAIMER = (

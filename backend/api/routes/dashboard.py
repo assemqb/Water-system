@@ -9,6 +9,7 @@ from backend.services.dashboard_service import dashboard_service
 
 from analytics.chart_narratives import chart_narratives
 from analytics.gis_layers import gis_bundle
+from analytics.i18n_content import LAKE_CLASS_NOTE, norm_lang
 from analytics.public_facts import full_panel_facts, lake_facts, public_facts, worst_parameter_facts
 from analytics.story_engine import generate_stories
 
@@ -73,6 +74,8 @@ def dashboard_summary(body: FilterRequest):
         "kpi_lakes": dashboard_service.kpi_lakes(filtered),
         "kpi_full_panel": dashboard_service.kpi_full_panel(filtered),
         "kpi_worst_parameter": dashboard_service.kpi_worst_parameter(filtered),
+        "river_class_summary": dashboard_service.river_class_summary(filtered),
+        "lake_class_note": LAKE_CLASS_NOTE[norm_lang(lang)],
         "data_quality": dashboard_service.data_quality(filtered),
         "risk_alerts": dashboard_service.risk_alerts(filtered),
         "insights": dashboard_service.insights(filtered, lang=lang),

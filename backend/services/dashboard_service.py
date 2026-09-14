@@ -19,6 +19,7 @@ import plotly.graph_objects as go
 from analytics.ai_insights import generate_insights
 from analytics.water_body import exclude_lakes, only_lakes
 from analytics.table_type import only_full_panel, only_worst_parameter
+from analytics.water_quality_class import class_distribution, class_exceedance_catalog
 from analytics.gis_layers import basin_stats, pollution_hotspots
 from analytics.chart_narratives import chart_narratives
 from analytics.chat_assistant import chat as chat_assistant
@@ -179,6 +180,12 @@ class DashboardService:
         i.e. water-level/reference rows) — excludes lakes (see L7 /
         analytics.water_body).
 
+        Secondary figures only: since Order No. 111-НҚ (2025-06-04), the
+        PRIMARY river assessment is the water quality class distribution —
+        see river_class_summary()/river_class_summary in the API response.
+        MPC ratio/WQI here (median_wqi, mean_ratio) are kept as an
+        explicitly-labeled auxiliary figure, not removed, per instruction.
+
         NOT also restricted to full_panel: in this dataset the two table
         layouts correlate almost perfectly with water_body_type — Kazhydromet
         reports lakes/seas via the comprehensive "Ингредиенттер атауы" panel
@@ -192,7 +199,8 @@ class DashboardService:
         over_mpc_share/high_risk_share are omitted here for exactly that
         reason — worst_parameter rows are pre-filtered to exceedances by
         construction, so a "share above MPC" computed on them is circular,
-        not informative. See exceedance_catalog() for what's shown instead."""
+        not informative. See exceedance_catalog() for the class-based
+        replacement."""
         return self._kpi_for(exclude_lakes(df), include_share_stats=False)
 
     def kpi_lakes(self, df: pd.DataFrame) -> Optional[dict]:
@@ -213,52 +221,25 @@ class DashboardService:
         worst = only_worst_parameter(df)
         return self._kpi_for(worst) if not worst.empty else None
 
+    def river_class_summary(self, df: pd.DataFrame) -> dict:
+        """Primary river assessment: distribution of measurements across
+        the 6 Order-111-НҚ quality classes, and the worst class observed in
+        the current filter. Scoped to rivers/canals/channel reservoirs only
+        (see analytics.water_quality_class) — never lakes/seas."""
+        return class_distribution(df)
+
     def exceedance_catalog(self, df: pd.DataFrame) -> list[dict]:
-        """River exceedance catalog: per water body + pollutant, the maximum
-        MPC ratio recorded and how many distinct months an exceedance
-        (Ratio > 1) was reported.
+        """River/canal/reservoir catalog: per water body + pollutant, the
+        worst Order-111-НҚ class ever recorded and in how many distinct
+        bulletins a poor class (5 or 6) was reported.
 
-        Shown in place of over_mpc_share/high_risk_share in the river
-        default view (`kpi`): worst_parameter rows are already pre-filtered
-        to whatever exceeded a threshold that month, so a "share above MPC"
-        computed on them describes the reporting table, not river pollution
-        prevalence. "Which river, which substance, how bad, how often" is
-        the meaningful question for this kind of data instead.
+        Reformulated from an earlier MPC-ratio version (max_ratio/
+        months_exceeded) now that the class table is the primary
+        assessment (see river_class_summary); MPC ratio/WQI remain
+        available at the row level and in `kpi`'s secondary fields, just
+        not as this catalog's headline anymore.
         """
-        rivers = exclude_lakes(df)
-        if rivers.empty or "water_body" not in rivers.columns or "Pollutant" not in rivers.columns:
-            return []
-        rivers = rivers[rivers["water_body"].fillna("") != ""].copy()
-        if "suspected_source_error" in rivers.columns:
-            # A reading flagged as probably transposed in the source PDF
-            # itself (see data/kazhydromet_bulletin_etl.py
-            # SUSPECTED_SOURCE_ERRORS) is kept in the dataset unmodified,
-            # but must not read as a real spike here. The master CSV mixes
-            # this column's True/False with NaN (rows from other sources
-            # never set it), which reads back as an `object` dtype of
-            # NaN/bool — cast to a clean bool before negating so `~` is a
-            # real boolean NOT, not Python's bitwise invert on `object`.
-            flagged = rivers["suspected_source_error"].fillna(False).astype(bool)
-            rivers = rivers[~flagged]
-        if rivers.empty:
-            return []
-        rivers["_month"] = pd.to_datetime(rivers["Date"], errors="coerce").dt.to_period("M")
-
-        rows: list[dict] = []
-        for (water_body, pollutant), grp in rivers.groupby(["water_body", "Pollutant"]):
-            exceeded = grp[grp["Ratio"] > 1]
-            if exceeded.empty:
-                continue
-            rows.append({
-                "water_body": str(water_body),
-                "pollutant": str(pollutant),
-                "basin": str(grp["Basin"].mode().iloc[0]) if "Basin" in grp.columns and len(grp["Basin"].dropna()) else None,
-                "max_ratio": round(float(grp["Ratio"].max()), 2),
-                "months_exceeded": int(exceeded["_month"].nunique()),
-                "months_observed": int(grp["_month"].nunique()),
-            })
-        rows.sort(key=lambda r: r["max_ratio"], reverse=True)
-        return rows
+        return class_exceedance_catalog(df)
 
     def data_quality(self, df: pd.DataFrame) -> dict:
         return data_quality_summary(df)

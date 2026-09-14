@@ -111,6 +111,7 @@ Detailed diagrams and API flows: [ARCHITECTURE.md](ARCHITECTURE.md)
 - `below_detection` — `True` when the bulletin reported `0`; kept as a real, meaningful zero rather than dropped as if no reading existed (Ratio/WQI both compute to 0 = Safe, correctly).
 - `exceeds_plausible` — `True` when the concentration is above the generous `PLAUSIBLE_MAX` ceiling (data/kazhydromet_bulletin_etl.py); flagged rather than dropped (see section 22 — the one row this has ever caught in the full corpus was manually confirmed as a real reading, not a PDF artifact).
 - `suspected_source_error` — `True` for one specific reading (Balkash-Alakol_2025-01.pdf, Темірлік өзені, Copper) that manual cross-checking found almost certainly transposed with its neighboring phosphorus reading *in the source PDF itself* — see [Round 3](#round-3--class-label-block-boundaries-suspected_source_error-recovered-burabay-tables). The value is kept exactly as printed (never corrected) and excluded only from `exceedance_catalog()`, so a probable data-entry error upstream doesn't read as a real contamination spike.
+- `water_quality_class` (1–6, or blank) — the Order No. 111-НҚ class for this reading; see section 7 for the full table. Populated for rivers/canals/channel reservoirs only, per the order's own scope note — blank for every lake/sea row, including "су қоймасы" reservoir rows that carry `water_body_type=="lake"` for the unrelated L7 concern.
 - `station` — present in the schema for a numbered monitoring-post code, but these bulletins organize hydrochemical readings by water-body name/location description rather than a numeric post code (unlike the separate water-level hydrological posts in `STATION_MAP`), so it is empty for this data source.
 
 **River/lake split in analytics (L7):** naturally saline lakes (Alakol, Balkhash, Tengiz/Northern Caspian) show Sulfates ratios of natural mineralization, not pollution, and blending them into a regional pollution ranking misrepresents lake-adjacent regions. `analytics/water_body.py` provides `exclude_lakes`/`only_lakes`; the dashboard's KPIs, regional facts/insights, the chat analyst's grounding context, and the map's per-region stats all default to rivers (`exclude_lakes`) and expose a parallel lake-only view (`kpi_lakes`, `lake_facts`, `region_stats_lakes` in the `/api/dashboard/summary` response) shown as a separate panel in the frontend rather than merged into the main numbers.
@@ -136,13 +137,36 @@ Consequently `kpi()` (the river-default main view) is **not** also restricted to
 
 ### Key columns
 
-`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`, `water_body`, `water_body_type`, `table_type`, `below_detection`, `exceeds_plausible`, `suspected_source_error`
+`Date`, `Basin`, `Region`, `Pollutant`, `Concentration`, `MPC`, `WQI_Score`, `Hazard_Class`, `data_source`, `Year`, `Ratio`, `Risk_Level`, `water_body`, `water_body_type`, `table_type`, `below_detection`, `exceeds_plausible`, `suspected_source_error`, `water_quality_class`
 
 ---
 
-## 7. Water Quality Index and MPC Explanation
+## 7. Water Quality Classification (primary) and MPC Ratio/WQI (secondary)
 
-### Pollution ratio
+Since **Order of the Minister of Water Resources and Irrigation of the Republic of Kazakhstan No. 111-НҚ, dated 2025-06-04** ("Об утверждении Единой системы классификации качества воды водных объектов", in effect from 2025-06-10) — approved by the academic advisor — the **water quality class (1–6)** is the primary assessment for rivers, replacing the MPC-ratio-based approach below as the headline figure. MPC ratio and WQI are **kept, not removed**, as an explicitly-labeled secondary figure (see `dashboard_service.kpi()`).
+
+### Water quality classes (`water_quality_class`, 1–6)
+
+Class boundaries, upper bound per class in mg/L (`config/settings.py: WATER_QUALITY_CLASSES`):
+
+| Pollutant | Class 1 | Class 2 | Class 3 | Class 4 | Class 5 | Class 6 |
+|---|---:|---:|---:|---:|---:|---:|
+| Sulfates | <100 | ≤100 | ≤500 | ≤600 | ≤1500 | >1500 |
+| Nitrates (as NO3⁻) | ≤40 | ≤40 | ≤45 | ≤45 | ≤45 | >45 |
+| Copper (general form) | ≤0.002 | ≤0.002 | ≤2.0 | ≤2.0 | ≤2.4 | >2.4 |
+| Zinc (general form) | ≤0.04 | ≤0.04 | ≤0.04 | ≤0.12 | ≤0.20 | >0.20 |
+| Phenols (volatile) | ≤0.001 | ≤0.001 | ≤0.001 | ≤0.002 | ≤0.005 | >0.005 |
+| Oil Products | ≤0.05 | ≤0.05 | ≤0.10 | ≤0.20 | ≤0.30 | >0.30 |
+
+A concentration is assigned to the lowest-numbered class whose bound it satisfies. Bulletins report "мыс"/"мырыш"/"ұшқыш фенол" (copper/zinc/phenols) without specifying dissolved vs. total form — per the advisor's guidance, the **general/total form's** thresholds and the **volatile phenols** thresholds are used uniformly for all readings of that pollutant, a disclosed methodological choice (same spirit as the MPC-mixing disclosure below), not a data error.
+
+**Several classes share the same bound for a given pollutant by design** (e.g. Copper classes 1–2 both cap at 0.002; Nitrates classes 3–5 all cap at 45) — the order's table is jointly defined across many parameters, and some coincide when only one is viewed alone. Practical effect: classifying by a single pollutant can never land on some mid-range classes for that pollutant (e.g. Copper can only ever come out as class 1, 3, 5, or 6) — this is the source table exactly, not smoothed into evenly-spaced bins. See `tests/test_water_quality_class.py` for the full boundary matrix.
+
+**Scope limit, from the order's own explanatory note: classes apply to rivers, canals, and channel (riverbed) reservoirs only — NOT to seas or lakes**, explicitly naming the Caspian, Aral, and Balkhash. `water_quality_class` is therefore blank for every lake/sea row; a "су қоймасы" (reservoir) IS classified despite `water_body_type=="lake"`, since every reservoir in this dataset (Бұқтырма, Өскемен, Қапшағай, Кеңгір) is a dammed river reservoir, not a natural lake — see `is_wqc_eligible()` in `data/kazhydromet_bulletin_etl.py` and limitation L9. The dashboard shows lakes' MPC ratio/WQI only, with an explicit note why no class is shown (`analytics/i18n_content.py: LAKE_CLASS_NOTE`).
+
+River dashboard primary view (`dashboard_service.river_class_summary()` / `exceedance_catalog()`): how many measurements fall in each class, the worst class observed, and — per river + pollutant — the worst class ever recorded plus in how many distinct bulletins a poor class (5 or 6) was reported.
+
+### Pollution ratio (secondary)
 
 ```
 Ratio = Concentration / MPC
@@ -509,7 +533,7 @@ A legacy Streamlit thesis prototype is preserved in `archive/streamlit_thesis_da
 
 ## 21. Limitations
 
-Documented in `config/settings.py` (L1–L8):
+Documented in `config/settings.py` (L1–L9):
 
 1. **L1:** Small sample for annual ML forecasting — n ≈ 5 years using the multi-decade water-level series; chemical-pollutant forecasting is unavailable below `MIN_ML_FORECAST_YEARS = 4` (currently n = 2: 2024, 2025) — a same-month year-over-year comparison is shown instead (see section 8)
 2. **L2:** Chemical pollution records are real measurements extracted from official Kazhydromet monthly bulletins (2025: 11/12 months; 2024: 6 fully-covered months), not statistically reconstructed; readings reported as nitrate-nitrogen were converted to nitrate-ion equivalents (×4.4266, see section 7)
@@ -519,6 +543,7 @@ Documented in `config/settings.py` (L1–L8):
 6. **L6:** WQI uses MPC-anchored sub-indices; the 6 MPCs mix two different official standards — see section 7 for the full sourced table (this is disclosure, not a data error)
 7. **L7:** Sulfates in naturally saline lakes (Alakol, Balkhash, Tengiz) reflect natural mineralization, not pollution — check `water_body_type` before reading a high Sulfates ratio there as a pollution signal
 8. **L8:** `table_type` and `water_body_type` are not independent — Kazhydromet reports lakes/seas via the comprehensive panel and rivers via the worst-exceeding-parameter table almost exclusively (0 river rows are full_panel), so river statistics are necessarily built from the exceedance-biased worst_parameter table; see section 6
+9. **L9:** `water_quality_class` (Order No. 111-НҚ, 2025-06-04) is populated for rivers, canals, and channel reservoirs only, per the order's own scope note — it is blank for seas and lakes (Caspian, Aral, Balkhash included), where MPC ratio/WQI remain the only quality figures shown; see section 7
 
 ### Repeated-prefix table recovery/exclusion (L2)
 
@@ -606,6 +631,47 @@ Root cause: this specific "Кесте" format has a *second* class column report
 No 2024 rows changed. Regression test: `test_orphan_name_sharing_a_line_with_a_value_cell`.
 
 **Validation-sample page-number generator fix:** the ad hoc script used to derive a `page` hint for `validation_sample_3.csv` (counting `pdftotext -layout`'s form-feed page breaks) had two bugs, found from the report that Esil_2025-06's row 1 pointed to page 31 while the actual lake table is on 29–30: (1) a below-detection value (`0.0`) produced a degenerate search anchor (`"0,0"`) that matched an unrelated table's unrelated zero elsewhere in the document; (2) a full_panel row's water-body-name fallback search wasn't scoped to start after the first ingredient-table trigger, so an earlier narrative mention of the same name won. Both fixed; all 30 rows in the regenerated sample now resolve to a page.
+
+### Round 5 — Water quality classification rollout (Order No. 111-НҚ)
+
+River/canal/reservoir measurements by class, per basin (`analytics/water_quality_class.class_distribution_by_basin`):
+
+| Basin | Records | Class 1 | Class 2 | Class 3 | Class 4 | Class 5 | Class 6 | Worst |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Aralo-Syrdarya | 17 | 7 | 0 | 10 | 0 | 0 | 0 | 3 |
+| Balkash-Alakol | 119 | 67 | 0 | 52 | 0 | 0 | 0 | 3 |
+| Ertis | 144 | 55 | 0 | 31 | 24 | 6 | 28 | 6 |
+| Esil | 30 | 18 | 0 | 11 | 1 | 0 | 0 | 4 |
+| Nura-Sarysu | 24 | 5 | 0 | 12 | 1 | 0 | 6 | 6 |
+| Shu-Talas | 49 | 10 | 0 | 25 | 3 | 11 | 0 | 5 |
+| Tobyl-Torgay | 32 | 31 | 0 | 0 | 0 | 1 | 0 | 5 |
+| Zhaiyk-Kaspian | 49 | 0 | 0 | 25 | 19 | 5 | 0 | 5 |
+
+Class 2 is empty everywhere — expected, not a bug: every pollutant's class-2 bound coincides with either class 1's or is otherwise unreachable alone (see section 7's "classes share the same bound" note).
+
+20 water body + pollutant pairs reached class 5–6 (of 115 classified river pairs), 12 of them class 6 — all in Ertis (Zinc-dominated) and Nura-Sarysu (Nitrates):
+
+| Water body | Pollutant | Basin | Worst class | Bulletins (5–6 / observed) |
+|---|---|---|---:|---|
+| Красноярка өзені | Zinc | Ertis | 6 | 9/11 |
+| Үлбі өзені | Zinc | Ertis | 6 | 7/11 |
+| Глубочанка өзені | Zinc | Ertis | 6 | 4/12 |
+| Кіші Қарақожа өзені | Zinc | Ertis | 6 | 4/4 |
+| Соқыр өзені | Nitrates | Nura-Sarysu | 6 | 3/3 |
+| Тихая өзені | Zinc | Ertis | 6 | 3/12 |
+| Арасан өзені | Copper, Zinc, Sulfates | Ertis | 6 | 1–2/1–2 (each) |
+| Кіші Қарақожа өзені | Copper | Ertis | 6 | 2/2 |
+| Нұра өзені | Nitrates | Nura-Sarysu | 6 | 2/2 |
+| Шерубайнұра өзені | Nitrates | Nura-Sarysu | 6 | 1/1 |
+| Қарабалта өзені | Sulfates | Shu-Talas | 5 | 10/15 |
+| Жайық өзені, Перетаска тарм., Яик тарм. | Oil Products | Zhaiyk-Kaspian | 5 | 1/8 (each) |
+| Желқуар өзені | Sulfates | Tobyl-Torgay | 5 | 1/1 |
+| Тоқташ өзені | Sulfates | Shu-Talas | 5 | 1/4 |
+| Шаронова тарм., Қиғаш өзені | Phenols | Zhaiyk-Kaspian | 5 | 1/4 (each) |
+
+This matches every previously-documented severe-contamination case in this README (Кіші Қарақожа's recurring Cu/Zn, Ertis-basin Zinc, Nura-Sarysu Nitrates near mining) — no new anomaly, the class table just restates the same known pollution pattern in the new official terms.
+
+**Spelling-variant fix found while building this table:** "Красноярка өз." (Ertis_2024-12.pdf only) was missing from `CANONICAL_NAMES`, splitting one river's record across two names in the class-5/6 catalog (9/11 bulletins once merged, vs. 8/10 and 1/1 separately). Added; no other new variants found in this pass.
 
 ---
 

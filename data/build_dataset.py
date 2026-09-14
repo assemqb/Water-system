@@ -62,6 +62,7 @@ MASTER_COLUMNS = [
     "below_detection",
     "exceeds_plausible",
     "suspected_source_error",
+    "water_quality_class",
 ]
 
 
@@ -152,6 +153,15 @@ def _load_real_pollution() -> pd.DataFrame:
                 "below_detection": bool(row.get("below_detection", False)),
                 "exceeds_plausible": bool(row.get("exceeds_plausible", False)),
                 "suspected_source_error": bool(row.get("suspected_source_error", False)),
+                # Order No. 111-НҚ class (1-6): blank in the source CSV for
+                # lakes/seas (out of the order's scope) or an unattributed
+                # water body — kept as NaN, not 0, so it's never mistaken
+                # for a real class-1 reading.
+                "water_quality_class": (
+                    int(row["water_quality_class"])
+                    if pd.notna(row.get("water_quality_class")) and str(row.get("water_quality_class")).strip() != ""
+                    else np.nan
+                ),
             }
         )
     df = pd.DataFrame(rows)

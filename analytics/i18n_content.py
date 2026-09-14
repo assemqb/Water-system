@@ -93,6 +93,25 @@ CHART_LABELS = {
 }
 
 
+LAKE_CLASS_NOTE = {
+    "en": (
+        "Water quality classes (Order No. 111-НҚ, 2025-06-04) do not apply to seas and lakes "
+        "— the order's own scope note names the Caspian, Aral, and Balkhash explicitly. "
+        "Lake figures below are MPC ratio and WQI only."
+    ),
+    "ru": (
+        "Классы качества воды (приказ №111-НҚ от 04.06.2025) не распространяются на моря и озёра "
+        "— это прямо указано в примечании к приказу (Каспийское, Аральское, Балхаш названы явно). "
+        "Для озёр ниже показаны только кратность ПДК и WQI."
+    ),
+    "kk": (
+        "Су сапасының кластары (04.06.2025 жылғы №111-НҚ бұйрығы) теңіздер мен көлдерге "
+        "қолданылмайды — бұл бұйрықтың өз ескертпесінде тікелей көрсетілген (Каспий, Арал, Балқаш "
+        "нақты аталған). Көлдер үшін төменде тек ШРК еселігі мен WQI көрсетілген."
+    ),
+}
+
+
 def chart_labels(lang: str) -> dict[str, str]:
     return CHART_LABELS.get(norm_lang(lang), CHART_LABELS["en"])
 
